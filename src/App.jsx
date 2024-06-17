@@ -1,11 +1,16 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RecoilRoot } from "recoil";
-import CharacterCounter from "./pages/CharacterCounter";
+import CharacterCounter from "./pages/ExamplePage";
 
 function App() {
+  const queryClient = new QueryClient();
+
   return (
-    <RecoilRoot>
-      <CharacterCounter />
-    </RecoilRoot>
+    <QueryClientProvider client={queryClient}>
+      <RecoilRoot>
+        <CharacterCounter />
+      </RecoilRoot>
+    </QueryClientProvider>
   );
 }
 
