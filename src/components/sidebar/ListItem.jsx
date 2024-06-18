@@ -1,8 +1,47 @@
-import { useSetRecoilState } from "recoil";
-import { selectPlaceState } from "../../recoil/atom/searchAtom";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { searchData, selectPlaceState } from "../../recoil/atom/searchAtom";
+import { useEffect, useState } from "react";
 
 const ListItem = ({ index, places }) => {
-  const setDatePlace = useSetRecoilState(selectPlaceState);
+  const [isCheck, setIsCheck] = useState(false);
+  const [datePlace, setDatePlace] = useRecoilState(selectPlaceState);
+  const setSearchedData = useSetRecoilState(searchData);
+
+  useEffect(() => {
+    const foundItem = datePlace.find((item) => item.id === places.id);
+    if (foundItem) {
+      setIsCheck(true);
+    } else {
+      setIsCheck(false);
+    }
+  }, [datePlace, places.id]);
+
+  const toggleCheckBox = () => {
+    if (isCheck) {
+      setSearchedData((prev) => {
+        return prev.map((item) => {
+          if (item.id === places.id) {
+            return { ...item, checked: false };
+          }
+          return item;
+        });
+      });
+      setDatePlace((prev) => {
+        return prev.filter((data) => data.id !== places.id);
+      });
+    } else if (!isCheck) {
+      setSearchedData((prev) => {
+        return prev.map((item) => {
+          if (item.id === places.id) {
+            return { ...item, checked: true };
+          }
+          return item;
+        });
+      });
+      setDatePlace((prev) => [...prev, places]);
+    }
+    setIsCheck(!isCheck);
+  };
 
   return (
     <li className="item flex">
@@ -21,7 +60,7 @@ const ListItem = ({ index, places }) => {
           <span className="info-item tel"> {places.phone}</span>
         </a>
       </div>
-      <input type="checkbox" onClick={() => setDatePlace((prev) => [...prev, places])} />
+      <input type="checkbox" checked={isCheck} onChange={toggleCheckBox} />
     </li>
   );
 };

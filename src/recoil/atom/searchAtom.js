@@ -14,3 +14,8 @@ export const selectPlaceState = atom({
   key: "selectPlaceState",
   default: [],
 });
+
+export const searchData = atom({
+  key: "searchData",
+  default: [],
+});

@@ -1,33 +1,21 @@
 import { useEffect, useState } from "react";
 import closeBtn from "../../assets/close-2.png";
 import searchBtn from "../../assets/search.png";
-import { useSetRecoilState } from "recoil";
-import { searchKeywordState, searchCategoryState } from "../../recoil/atom/searchAtom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { searchKeywordState, searchCategoryState, searchData } from "../../recoil/atom/searchAtom";
 import ListItem from "./ListItem";
 
 function Sidebar({ isOpen, onClose }) {
   const [searchInputValue, setSearchInputValue] = useState("");
   const [keyword, setKeyword] = useState("");
-  const [searchData, setSearchData] = useState([]);
+  const [sidebarData, setSidebarData] = useState([]);
   const setSearchRecoil = useSetRecoilState(searchKeywordState);
   const setCatogoryRecoil = useSetRecoilState(searchCategoryState);
-
-  const loadLocalStorageData = () => {
-    const localData = localStorage.getItem("searchData");
-    setSearchData(JSON.parse(localData));
-  };
+  const searchedData = useRecoilValue(searchData);
 
   useEffect(() => {
-    loadLocalStorageData();
-    const handleStorageChange = () => {
-      loadLocalStorageData();
-    };
-    window.addEventListener("storageChanged", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storageChanged", handleStorageChange);
-    };
-  }, []);
+    setSidebarData(searchedData);
+  }, [searchedData]);
 
   const keywordChange = (e) => {
     e.preventDefault();
@@ -47,6 +35,7 @@ function Sidebar({ isOpen, onClose }) {
       return;
     }
   };
+
   return (
     <div
       className={`fixed top-0 right-0 h-full w-[491px] bg-slate-500 shadow-lg transform transition-transform duration-300 ease-in-out z-10 ${
@@ -99,7 +88,8 @@ function Sidebar({ isOpen, onClose }) {
         </button>
       </div>
       <main>
-        {searchData && searchData.map((data, index) => <ListItem key={data.id} index={index} places={data} />)}
+        {sidebarData.length > 0 &&
+          sidebarData.map((data, index) => <ListItem key={data.id} index={index} places={data} />)}
       </main>
     </div>
   );
