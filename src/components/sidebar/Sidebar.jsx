@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import closeBtn from "../../assets/close-2.png";
 import searchBtn from "../../assets/search.png";
 import { useSetRecoilState } from "recoil";
-import { searchKeywordState } from "../../recoil/atom/searchAtom";
+import { searchKeywordState, searchCategoryState } from "../../recoil/atom/searchAtom";
 import ListItem from "./ListItem";
 
 function Sidebar({ isOpen, onClose }) {
@@ -10,6 +10,7 @@ function Sidebar({ isOpen, onClose }) {
   const [keyword, setKeyword] = useState("");
   const [searchData, setSearchData] = useState([]);
   const setSearchRecoil = useSetRecoilState(searchKeywordState);
+  const setCatogoryRecoil = useSetRecoilState(searchCategoryState);
 
   const loadLocalStorageData = () => {
     const localData = localStorage.getItem("searchData");
@@ -72,10 +73,30 @@ function Sidebar({ isOpen, onClose }) {
       </form>
 
       <div className="flex justify-center gap-3 mb-7">
-        <button className="text-[#84BBF2] w-[81px] h-[31px] border-2 border-[#C5DAEE] rounded-2xl">맛집</button>
-        <button className="text-[#84BBF2] w-[81px] h-[31px] border-2 border-[#C5DAEE] rounded-2xl">카페</button>
-        <button className="text-[#84BBF2] w-[81px] h-[31px] border-2 border-[#C5DAEE] rounded-2xl">놀거리</button>
-        <button className="text-[#84BBF2] w-[81px] h-[31px] border-2 border-[#C5DAEE] rounded-2xl">술집</button>
+        <button
+          className="text-[#84BBF2] w-[81px] h-[31px] border-2 border-[#C5DAEE] rounded-2xl"
+          onClick={() => setCatogoryRecoil("FD6")}
+        >
+          맛집
+        </button>
+        <button
+          className="text-[#84BBF2] w-[81px] h-[31px] border-2 border-[#C5DAEE] rounded-2xl"
+          onClick={() => setCatogoryRecoil("CE7")}
+        >
+          카페
+        </button>
+        <button
+          className="text-[#84BBF2] w-[81px] h-[31px] border-2 border-[#C5DAEE] rounded-2xl"
+          onClick={() => setCatogoryRecoil("AT4")}
+        >
+          관광명소
+        </button>
+        <button
+          className="text-[#84BBF2] w-[81px] h-[31px] border-2 border-[#C5DAEE] rounded-2xl"
+          onClick={() => setCatogoryRecoil("CT1")}
+        >
+          영화관
+        </button>
       </div>
       <main>
         {searchData && searchData.map((data, index) => <ListItem key={data.id} index={index} places={data} />)}

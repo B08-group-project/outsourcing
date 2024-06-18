@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Map, MapMarker, CustomOverlayMap } from "react-kakao-maps-sdk";
 import { useRecoilValue } from "recoil";
-import { searchKeywordState } from "../../recoil/atom/searchAtom";
+import { searchKeywordState, searchCategoryState, selectPlaceState } from "../../recoil/atom/searchAtom";
 
 const { kakao } = window;
 
@@ -12,6 +12,10 @@ function KakaoMap() {
   const [map, setMap] = useState();
   const [location, setLoacation] = useState(null);
   const keyword = useRecoilValue(searchKeywordState);
+  const category = useRecoilValue(searchCategoryState);
+
+  const recoilval = useRecoilValue(selectPlaceState);
+  console.log("recoilval::", recoilval);
 
   const setLocalStorage = (key, value) => {
     localStorage.setItem(key, value);
@@ -26,29 +30,38 @@ function KakaoMap() {
     if (!map) return;
     const ps = new kakao.maps.services.Places();
 
-    ps.keywordSearch(keyword, (data, status) => {
-      if (status === kakao.maps.services.Status.OK) {
-        const bounds = new kakao.maps.LatLngBounds();
-        let markers = [];
-        setLocalStorage("searchData", JSON.stringify(data));
+    const options = {
+      category_group_code: category,
+    };
+    // CT1 : 영화관, AT4 : 관광명소, FD6 : 식당 , CE7 : 카페
 
-        for (var i = 0; i < data.length; i++) {
-          markers.push({
-            position: {
-              lat: data[i].y,
-              lng: data[i].x,
-            },
-            content: data[i].place_name,
-          });
+    ps.keywordSearch(
+      keyword,
+      (data, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+          const bounds = new kakao.maps.LatLngBounds();
+          let markers = [];
+          setLocalStorage("searchData", JSON.stringify(data));
 
-          bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+          for (var i = 0; i < data.length; i++) {
+            markers.push({
+              position: {
+                lat: data[i].y,
+                lng: data[i].x,
+              },
+              content: data[i].place_name,
+            });
+
+            bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+          }
+          setMarkers(markers);
+
+          map.setBounds(bounds);
         }
-        setMarkers(markers);
-
-        map.setBounds(bounds);
-      }
-    });
-  }, [map, keyword]);
+      },
+      options,
+    );
+  }, [map, keyword, category]);
 
   const successHandler = (response) => {
     const { latitude, longitude } = response.coords;
