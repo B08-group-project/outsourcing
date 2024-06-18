@@ -1,4 +1,9 @@
+import { useSetRecoilState } from "recoil";
+import { selectPlaceState } from "../../recoil/atom/searchAtom";
+
 const ListItem = ({ index, places }) => {
+  const setDatePlace = useSetRecoilState(selectPlaceState);
+
   return (
     <li className="item flex">
       <div className="info">
@@ -13,10 +18,10 @@ const ListItem = ({ index, places }) => {
           ) : (
             <span className="info-item address-name">{places.address_name}</span>
           )}
-          <span className="info-item tel">{places.phone}</span>
+          <span className="info-item tel"> {places.phone}</span>
         </a>
       </div>
-      <input type="checkbox" />
+      <input type="checkbox" onClick={() => setDatePlace((prev) => [...prev, places])} />
     </li>
   );
 };

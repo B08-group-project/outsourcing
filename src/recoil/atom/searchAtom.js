@@ -5,6 +5,11 @@ export const searchKeywordState = atom({
   default: "",
 });
 
+export const searchCategoryState = atom({
+  key: "searchCategoryState",
+  default: "",
+});
+
 export const selectPlaceState = atom({
   key: "selectPlaceState",
   default: [],
