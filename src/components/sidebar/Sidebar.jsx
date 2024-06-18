@@ -1,44 +1,62 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import closeBtn from "../../assets/close-2.png";
 import searchBtn from "../../assets/search.png";
-import SearchItem from "./SearchItem";
-import Map from "../common/Map";
 import { useSetRecoilState } from "recoil";
 import { searchKeywordState } from "../../recoil/atom/searchAtom";
-import KakaoMap from "../common/KakaoMap";
+import ListItem from "./ListItem";
 
-// const { kakao } = window;
-
-function Sidebar() {
-  const [Value, setValue] = useState("");
-  // 제출한 검색어 관리
-  const [Keyword, setKeyword] = useState("");
+function Sidebar({ isOpen, onClose }) {
+  const [searchInputValue, setSearchInputValue] = useState("");
+  const [keyword, setKeyword] = useState("");
+  const [searchData, setSearchData] = useState([]);
   const setSearchRecoil = useSetRecoilState(searchKeywordState);
 
-  // 입력 폼 변화 감지하여 입력 값을 state에 담아주는 함수
+  const loadLocalStorageData = () => {
+    const localData = localStorage.getItem("searchData");
+    setSearchData(JSON.parse(localData));
+  };
+
+  useEffect(() => {
+    loadLocalStorageData();
+    const handleStorageChange = () => {
+      loadLocalStorageData();
+    };
+    window.addEventListener("storageChanged", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storageChanged", handleStorageChange);
+    };
+  }, []);
+
   const keywordChange = (e) => {
     e.preventDefault();
-    setValue(e.target.value);
+    setKeyword(e.target.value);
   };
 
-  // 제출한 검색어 state에 담아주는 함수
   const submitKeyword = (e) => {
+    localStorage.removeItem("searchData");
     e.preventDefault();
-    setKeyword(Value);
-    setSearchRecoil(Value);
+    setSearchInputValue(keyword);
+    setSearchRecoil(keyword);
   };
 
-  // 검색어를 입력하지 않고 검색 버튼을 눌렀을 경우
   const valueChecker = () => {
-    if (Value === "") {
-      alert("검색어를 입력해주세요.");
+    if (searchInputValue === "") {
+      // alert("검색어를 입력해주세요.");
+      return;
     }
   };
   return (
-    <div className="w-[491px] h-[100vh] bg-slate-500">
+    <div
+      className={`fixed top-0 right-0 h-full w-[491px] bg-slate-500 shadow-lg transform transition-transform duration-300 ease-in-out z-10 ${
+        isOpen ? "translate-x-0" : "translate-x-full"
+      }`}
+    >
       <div className="flex items-center justify-between p-3">
         <header className="text-[24px] font-bold ml-5">장소 검색</header>
-        <img className="w-[50px] h-[50px]" src={closeBtn} alt="close button" />
+        <button onClick={onClose}>
+          <img className="w-[50px] h-[50px]" src={closeBtn} alt="close button" />
+        </button>
       </div>
 
       <form className="relative flex items-center mb-4" onSubmit={submitKeyword}>
@@ -60,8 +78,7 @@ function Sidebar() {
         <button className="text-[#84BBF2] w-[81px] h-[31px] border-2 border-[#C5DAEE] rounded-2xl">술집</button>
       </div>
       <main>
-        {/* <Map searchKeyword={Keyword} /> */}
-        <KakaoMap />
+        {searchData && searchData.map((data, index) => <ListItem key={data.id} index={index} places={data} />)}
       </main>
     </div>
   );

@@ -1,6 +1,6 @@
-const ListItem = ({ index, places, map, onMouseOver, onMouseOut }) => {
+const ListItem = ({ index, places }) => {
   return (
-    <li className="item">
+    <li className="item flex">
       <div className="info">
         <span className={`marker marker_${index + 1}`}>{index + 1}</span>
         <a href={places.place_url}>
@@ -16,6 +16,7 @@ const ListItem = ({ index, places, map, onMouseOver, onMouseOut }) => {
           <span className="info-item tel">{places.phone}</span>
         </a>
       </div>
+      <input type="checkbox" />
     </li>
   );
 };

@@ -1,8 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
-import Sidebar from "../components/sidebar/Sidebar";
-// import KakaoMap from "../components/common/KakaoMap";
-import Map from "../components/common/Map";
+import MainPage from "../pages/MainPage";
 
 const router = createBrowserRouter([
   {
@@ -10,11 +8,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Sidebar />,
-      },
-      {
-        path: "/map",
-        element: <Map />,
+        element: <MainPage />,
       },
     ],
   },

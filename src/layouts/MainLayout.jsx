@@ -1,11 +1,14 @@
 import { Outlet } from "react-router-dom";
+import Header from "../components/common/Header";
 
 function MainLayout() {
   return (
-    <main>
-      MainLayout 입니다
-      <Outlet />
-    </main>
+    <>
+      <Header />
+      <main>
+        <Outlet />
+      </main>
+    </>
   );
 }
 
