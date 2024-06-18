@@ -1,14 +1,20 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
-import ExamplePage from "../pages/ExamplePage";
+import Sidebar from "../components/sidebar/Sidebar";
+// import KakaoMap from "../components/common/KakaoMap";
+import Map from "../components/common/Map";
 
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
     children: [
       {
-        path: "/example",
-        element: <ExamplePage />,
+        path: "/",
+        element: <Sidebar />,
+      },
+      {
+        path: "/map",
+        element: <Map />,
       },
     ],
   },
