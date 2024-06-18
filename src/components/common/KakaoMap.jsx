@@ -1,43 +1,84 @@
-import { useEffect } from "react";
-// import barMarker from "../../assets/bar-marker.png";
-import cafeMarker from "../../assets/cafe-marker.png";
-// import playMarker from "../../assets/play-marker.png";
-// import restaurantMarker from "../../assets/restaurant-marker.png";
+import { useEffect, useState } from "react";
+import { Map, MapMarker, CustomOverlayMap } from "react-kakao-maps-sdk";
+import { useRecoilValue } from "recoil";
+import { searchKeywordState } from "../../recoil/atom/searchAtom";
 
 const { kakao } = window;
 
 function KakaoMap() {
-  useEffect(() => {
-    var container = document.getElementById("map");
-    const position = new kakao.maps.LatLng(33.450701, 126.570667);
-    var options = {
-      center: position,
-      level: 3,
-    };
+  const [level, setLevel] = useState(3);
+  const [info, setInfo] = useState();
+  const [markers, setMarkers] = useState([]);
+  const [map, setMap] = useState();
+  const [location, setLoacation] = useState(null);
+  const keyword = useRecoilValue(searchKeywordState);
 
-    var map = new kakao.maps.Map(container, options);
-
-    // setMarker({ map, imageSrc: barMarker, position });
-    setMarker({ map, imageSrc: cafeMarker, position });
-    // setMarker({ map, imageSrc: playMarker, position });
-    // setMarker({ map, imageSrc: restaurantMarker, position });
-  }, []);
-
-  const setMarker = ({ map, imageSrc, position: markerPosition }) => {
-    var imageSize = new kakao.maps.Size(64, 69),
-      imageOption = { offset: new kakao.maps.Point(0, 10) };
-
-    var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
-
-    var marker = new kakao.maps.Marker({
-      position: markerPosition,
-      image: markerImage,
-    });
-
-    marker.setMap(map);
+  const setLocalStorage = (key, value) => {
+    localStorage.setItem(key, value);
+    window.dispatchEvent(new Event("storageChanged"));
   };
 
-  return <div id="map" style={{ width: "100%", height: "100vh" }}></div>;
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
+  }, []);
+
+  useEffect(() => {
+    if (!map) return;
+    const ps = new kakao.maps.services.Places();
+
+    ps.keywordSearch(keyword, (data, status) => {
+      if (status === kakao.maps.services.Status.OK) {
+        const bounds = new kakao.maps.LatLngBounds();
+        let markers = [];
+        setLocalStorage("searchData", JSON.stringify(data));
+
+        for (var i = 0; i < data.length; i++) {
+          markers.push({
+            position: {
+              lat: data[i].y,
+              lng: data[i].x,
+            },
+            content: data[i].place_name,
+          });
+
+          bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+        }
+        setMarkers(markers);
+
+        map.setBounds(bounds);
+      }
+    });
+  }, [map, keyword]);
+
+  const successHandler = (response) => {
+    const { latitude, longitude } = response.coords;
+    setLoacation({ latitude, longitude });
+  };
+
+  const errorHandler = (error) => {
+    console.log(error);
+  };
+
+  return (
+    <Map
+      center={{ lat: location ? location.latitude : 33.5563, lng: location ? location.longitude : 126.79581 }}
+      style={{ width: "100%", height: "90vh" }} // 지도 크기
+      level={level}
+      onCreate={setMap}
+    >
+      {markers.map((marker) => (
+        <MapMarker
+          key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+          position={marker.position}
+          onClick={() => setInfo(marker)}
+        >
+          {info && info.content === marker.content && <div style={{ color: "#000" }}>{marker.content}</div>}
+        </MapMarker>
+      ))}
+      <button onClick={() => setLevel(level + 1)}>-</button>
+      <button onClick={() => setLevel(level - 1)}>+</button>
+    </Map>
+  );
 }
 
 export default KakaoMap;
