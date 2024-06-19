@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Map, MapMarker, CustomOverlayMap } from "react-kakao-maps-sdk";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { searchKeywordState, searchCategoryState, searchData } from "../../recoil/atom/searchAtom";
+import { searchKeywordState, searchCategoryState, searchData, clickedPlaceState } from "../../recoil/atom/searchAtom";
 
 const { kakao } = window;
 
@@ -14,6 +14,7 @@ function KakaoMap() {
   const keyword = useRecoilValue(searchKeywordState);
   const category = useRecoilValue(searchCategoryState);
   const setSearchData = useSetRecoilState(searchData);
+  const clickedPlace = useRecoilValue(clickedPlaceState);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
@@ -82,6 +83,13 @@ function KakaoMap() {
           {info && info.content === marker.content && <div style={{ color: "#000" }}>{marker.content}</div>}
         </MapMarker>
       ))}
+      {clickedPlace && (
+        <CustomOverlayMap position={{ lat: clickedPlace.y, lng: clickedPlace.x }}>
+          <div className="customoverlay">
+            <span className="title">{clickedPlace.place_name}</span>
+          </div>
+        </CustomOverlayMap>
+      )}
       <button onClick={() => setLevel(level + 1)}>-</button>
       <button onClick={() => setLevel(level - 1)}>+</button>
     </Map>
