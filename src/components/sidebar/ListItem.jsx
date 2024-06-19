@@ -47,7 +47,7 @@ const ListItem = ({ index, places }) => {
     <li className="flex relative items-center mb-4 border-b border-solid border-gray-400 w-[90%] mx-auto pb-3">
       <div className="flex gap-5 items-center">
         <span className="font-semibold">{index + 1}</span>
-        <a href={places.place_url}>
+        <a href={places.place_url} target="_blank">
           <h5 className="mb-2 font-semibold ">{places.place_name}</h5>
           {places.road_address_name ? (
             <>

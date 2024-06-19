@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import closeBtn from "../../assets/close-2.png";
 import searchBtn from "../../assets/search.png";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { searchKeywordState, searchCategoryState, searchData } from "../../recoil/atom/searchAtom";
 import ListItem from "./ListItem";
 import { useRecoilState } from "recoil";
