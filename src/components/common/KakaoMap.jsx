@@ -67,6 +67,13 @@ function KakaoMap() {
     console.log(error);
   };
 
+  useEffect(() => {
+    if (map && clickedPlace) {
+      const placeLocation = new kakao.maps.LatLng(clickedPlace.y, clickedPlace.x);
+      map.setCenter(placeLocation);
+    }
+  }, [map, clickedPlace]);
+
   return (
     <Map
       center={{ lat: location ? location.latitude : 33.5563, lng: location ? location.longitude : 126.79581 }}
