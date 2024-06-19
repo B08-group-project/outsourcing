@@ -30,27 +30,27 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center items-center  flex-col  h-screen  ">
-      <div className="flex flex-col p-6 h-72  rounded-2xl gap-4 border-double  w-80 shadow-xl">
-        <h2 className="text-center text-2xl">로 그 인</h2>
+    <div className="flex flex-col items-center justify-center h-screen ">
+      <div className="flex flex-col gap-4 p-6 border-double shadow-xl h-72 rounded-2xl w-80">
+        <h2 className="text-2xl text-center">로 그 인</h2>
         <input
           type="text"
           placeholder="Email"
           ref={emailRef}
-          className="px-2 py-2 rounded-md w-full border-2 text-xs"
+          className="w-full px-2 py-2 text-xs border-2 rounded-md"
         />
         <input
           type="password"
           placeholder="Password"
           ref={passwordRef}
-          className="px-2 py-2 rounded-md w-full border-2 text-xs"
+          className="w-full px-2 py-2 text-xs border-2 rounded-md"
         />
-        <button onClick={onClickLogin} className=" bg-sky-300 p-2  rounded text-white text-xs">
+        <button onClick={onClickLogin} className="p-2 text-xs text-white rounded  bg-sky-300">
           로그인
         </button>
-        <div className=" text-xs flex justify-between">
+        <div className="flex justify-between text-xs ">
           <p>계정이 없으신가요?</p>
-          <Link to={"/Signup"} className=" text-sky-400 font-bold">
+          <Link to={"/Signup"} className="font-bold  text-sky-400">
             회원가입
           </Link>
         </div>
