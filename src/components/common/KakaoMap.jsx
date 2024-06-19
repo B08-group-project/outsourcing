@@ -73,6 +73,7 @@ function KakaoMap() {
   };
 
   const errorHandler = () => {
+    setIsCurrentLoading(false);
     alert("위치조회를 거절하셔서 현재위치로 이동할수없습니다");
   };
 
