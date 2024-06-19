@@ -15,9 +15,9 @@ function KakaoMap() {
   const category = useRecoilValue(searchCategoryState);
   const setSearchData = useSetRecoilState(searchData);
 
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
-  }, []);
+  // useEffect(() => {
+  //   navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
+  // }, []);
 
   useEffect(() => {
     if (!map) return;
@@ -62,8 +62,12 @@ function KakaoMap() {
     setLoacation({ latitude, longitude });
   };
 
-  const errorHandler = (error) => {
-    console.log(error);
+  const errorHandler = () => {
+    alert("위치조회를 거절하셔서 현재위치로 이동할수없습니다");
+  };
+
+  const setCurrentPosition = () => {
+    navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
   };
 
   return (
@@ -84,6 +88,7 @@ function KakaoMap() {
       ))}
       <button onClick={() => setLevel(level + 1)}>-</button>
       <button onClick={() => setLevel(level - 1)}>+</button>
+      <button onClick={setCurrentPosition}>현재위치</button>
     </Map>
   );
 }

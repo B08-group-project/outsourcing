@@ -24,7 +24,7 @@ function Sidebar({ isOpen, onClose }) {
   };
 
   const submitKeyword = (e) => {
-    setCategoryRecoil("");
+    setCategoryRecoil("FD6");
     e.preventDefault();
     setSearchInputValue(keyword);
     setSearchRecoil(keyword);
