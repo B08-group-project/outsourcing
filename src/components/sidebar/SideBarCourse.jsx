@@ -37,49 +37,53 @@ const SideBarCourse = ({ isCourseOpen, onCourseClose, isOpen, onClose, openSideb
   };
 
   return (
-    <div
-      className={`fixed top-0 right-0 h-full w-[491px] bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-10 ${
-        isCourseOpen ? "translate-x-0" : "translate-x-full"
-      }`}
-    >
-      <div className="flex items-center justify-between">
-        <button onClick={onCourseClose}>
-          <img className="w-[50px] h-[50px]" src={closeBtn} alt="close button" />
-        </button>
-        <button
-          className="mx-3 relative mt-4 w-[130px] py-2 text-lg bg-blue-500 text-white rounded-lg"
-          onClick={handleSavePlaces}
+    <>
+      {!isOpen && (
+        <div
+          className={`fixed top-0 right-0 h-full w-[491px] bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-10 ${
+            isCourseOpen ? "translate-x-0" : "translate-x-full"
+          }`}
         >
-          저장 하기
-        </button>
-      </div>
-      <div className="w-[428px] h-auto mx-auto text-center">
-        <h2 className="mt-4 text-xl font-semibold">코스 정하기</h2>
-        <div className="mt-4">
-          {coursePlaces.map((place) => (
-            <div key={place.id}>
-              <div className="flex items-center justify-between bg-white p-4">
-                <PlacesItem place={place} />
-                <button onClick={() => handleDeletePlace(place.id)}>
-                  <img className="w-[25px] h-[25px] mr-2" src={closeBtn} alt="close button" />
-                </button>
-              </div>
-              <div className="my-2 text-gray-400">▼</div>
-            </div>
-          ))}
-
-          <div className="my-5">
+          <div className="flex items-center justify-between">
+            <button onClick={onCourseClose}>
+              <img className="w-[50px] h-[50px]" src={closeBtn} alt="close button" />
+            </button>
             <button
-              className="w-[300px] text-2xl h-12 border-2 border-gray-300 rounded-[10px] bg-gray-100"
-              onClick={openSidebar}
+              className="mx-3 relative mt-4 w-[130px] py-2 text-lg bg-blue-500 text-white rounded-lg"
+              onClick={handleSavePlaces}
             >
-              +
+              저장 하기
             </button>
           </div>
+          <div className="w-[428px] h-auto mx-auto text-center">
+            <h2 className="mt-4 text-xl font-semibold">코스 정하기</h2>
+            <div className="mt-4">
+              {coursePlaces.map((place) => (
+                <div key={place.id}>
+                  <div className="flex items-center justify-between bg-white p-4">
+                    <PlacesItem place={place} />
+                    <button onClick={() => handleDeletePlace(place.id)}>
+                      <img className="w-[25px] h-[25px] mr-2" src={closeBtn} alt="close button" />
+                    </button>
+                  </div>
+                  <div className="my-2 text-gray-400">▼</div>
+                </div>
+              ))}
+
+              <div className="my-5">
+                <button
+                  className="w-[300px] text-2xl h-12 border-2 border-gray-300 rounded-[10px] bg-gray-100"
+                  onClick={openSidebar}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
       {isOpen && <Sidebar isOpen={isOpen} onClose={onClose} />}
-    </div>
+    </>
   );
 };
 
