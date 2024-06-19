@@ -19,3 +19,13 @@ export const searchData = atom({
   key: "searchData",
   default: [],
 });
+
+export const clickedPlaceState = atom({
+  key: "clickedPlaceState",
+  default: null,
+});
+
+export const searchDataFallback = atom({
+  key: "searchDataFallback",
+  default: false,
+});

@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import closeBtn from "../../assets/close-2.png";
 import searchBtn from "../../assets/search.png";
 import { useRecoilValue } from "recoil";
-import { searchKeywordState, searchCategoryState, searchData } from "../../recoil/atom/searchAtom";
+import { searchKeywordState, searchCategoryState, searchData, searchDataFallback } from "../../recoil/atom/searchAtom";
 import ListItem from "./ListItem";
 import { useRecoilState } from "recoil";
+import SearchFallback from "./SearchFallback";
 
 function Sidebar({ isOpen, onClose }) {
   const [searchInputValue, setSearchInputValue] = useState("");
@@ -13,6 +14,7 @@ function Sidebar({ isOpen, onClose }) {
   const [searchRecoil, setSearchRecoil] = useRecoilState(searchKeywordState);
   const [categoryRecoil, setCategoryRecoil] = useRecoilState(searchCategoryState);
   const searchedData = useRecoilValue(searchData);
+  const [fallback, setFallback] = useRecoilState(searchDataFallback);
 
   useEffect(() => {
     setSidebarData(searchedData);
@@ -25,6 +27,7 @@ function Sidebar({ isOpen, onClose }) {
 
   const submitKeyword = (e) => {
     setCategoryRecoil("FD6");
+    setFallback(false);
     e.preventDefault();
     setSearchInputValue(keyword);
     setSearchRecoil(keyword);
@@ -100,6 +103,7 @@ function Sidebar({ isOpen, onClose }) {
       <main className="overflow-y-scroll h-[75%]">
         {sidebarData.length > 0 &&
           sidebarData.map((data, index) => <ListItem key={data.id} index={index} places={data} />)}
+        {fallback && <SearchFallback />}
       </main>
     </div>
   );

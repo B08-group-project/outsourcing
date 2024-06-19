@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import supabase from "../supabase/supabase";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -7,10 +7,9 @@ const Signup = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const confirmationRef = useRef(null);
-  const [user, setUser] = useState(null);
   const navigator = useNavigate();
 
-  const OnclickSignup = async () => {
+  const onClickSignup = async () => {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
     const nickname = nicknameRef.current.value;
@@ -37,7 +36,6 @@ const Signup = () => {
       email,
       password,
     });
-    setUser(data);
 
     const { error } = await supabase.from("users").insert({
       id: data.user.id,
@@ -53,17 +51,8 @@ const Signup = () => {
     }
   };
 
-  // const OnclickBack = () => {
-  //   navigator("/login");
-  // };
-
   return (
     <div className="flex justify-center items-center  flex-col h-screen ">
-      {/* <div className=" w-screen pl-4 absolute top-0 pt-4">
-        <button onClick={OnclickBack} className=" w-28 h-9 bg-sky-300 rounded-lg text-white ">
-          뒤로 가기
-        </button>
-      </div> */}
       <div className="flex flex-col p-6 h-96  rounded-2xl gap-4 border-double  w-96 shadow-xl">
         <h2 className="text-center text-2xl">회 원 가 입</h2>
         <input
@@ -90,7 +79,7 @@ const Signup = () => {
           ref={confirmationRef}
           className=" px-2 py-2 rounded-md w-full ba bg border-2 text-xs"
         />
-        <button onClick={OnclickSignup} className=" bg-sky-300 p-2  rounded text-white text-xs">
+        <button onClick={onClickSignup} className=" bg-sky-300 p-2  rounded text-white text-xs">
           회원가입
         </button>
         <div className=" text-xs flex justify-between">
