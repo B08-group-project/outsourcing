@@ -1,13 +1,15 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import supabase from "../supabase/supabase";
 import { useNavigate, Link } from "react-router-dom";
+import userState from "../recoil/atom/user";
+import { useRecoilState } from "recoil";
 
 const Signup = () => {
   const nicknameRef = useRef(null);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const confirmationRef = useRef(null);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useRecoilState(userState);
   const navigator = useNavigate();
 
   const OnclickSignup = async () => {
@@ -53,17 +55,8 @@ const Signup = () => {
     }
   };
 
-  // const OnclickBack = () => {
-  //   navigator("/login");
-  // };
-
   return (
     <div className="flex justify-center items-center  flex-col h-screen ">
-      {/* <div className=" w-screen pl-4 absolute top-0 pt-4">
-        <button onClick={OnclickBack} className=" w-28 h-9 bg-sky-300 rounded-lg text-white ">
-          뒤로 가기
-        </button>
-      </div> */}
       <div className="flex flex-col p-6 h-96  rounded-2xl gap-4 border-double  w-96 shadow-xl">
         <h2 className="text-center text-2xl">회 원 가 입</h2>
         <input
