@@ -83,13 +83,21 @@ function KakaoMap() {
           {info && info.content === marker.content && <div style={{ color: "#000" }}>{marker.content}</div>}
         </MapMarker>
       ))}
+
       {clickedPlace && (
         <CustomOverlayMap position={{ lat: clickedPlace.y, lng: clickedPlace.x }}>
-          <div className="customoverlay">
-            <span className="title">{clickedPlace.place_name}</span>
+          <div className="relative bg-blue-50 rounded-lg shadow-lg p-4 max-w-xs top-[-80px] border border-blue-500">
+            <div className="flex flex-col text-left">
+              <span className="text-lg font-bold text-gray-800">
+                <a href={clickedPlace.place_url} target="_blank" rel="noopener noreferrer">
+                  {clickedPlace.place_name} →
+                </a>
+              </span>
+            </div>
           </div>
         </CustomOverlayMap>
       )}
+
       <button onClick={() => setLevel(level + 1)}>-</button>
       <button onClick={() => setLevel(level - 1)}>+</button>
     </Map>
