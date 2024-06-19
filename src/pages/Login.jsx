@@ -1,13 +1,11 @@
 import { useRef } from "react";
 import supabase from "../supabase/supabase";
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import userState from "../recoil/atom/user";
 
 const Login = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
-  const [user, setUser] = useRecoilState(userState);
+
   const navigator = useNavigate();
 
   const onClickLogin = async () => {
@@ -29,7 +27,6 @@ const Login = () => {
     navigator("/");
     console.log("data", data);
     console.log("error", error);
-    setUser(data.user);
   };
 
   const onClickGitHub = async () => {
