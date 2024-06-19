@@ -4,7 +4,6 @@ import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import MainPage from "../pages/MainPage";
 
-
 const router = createBrowserRouter([
   {
     element: <MainLayout />,

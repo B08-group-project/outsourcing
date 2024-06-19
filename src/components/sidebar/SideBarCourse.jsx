@@ -3,32 +3,14 @@ import closeBtn from "../../assets/close-2.png";
 import PlacesItem from "./PlacesItem";
 import Sidebar from "./Sidebar";
 import { useRecoilState } from "recoil";
-import { create } from "../../lib/api/course";
+import { createCourse } from "../../lib/api/course";
 import { selectPlaceState } from "../../recoil/atom/searchAtom";
 
 const SideBarCourse = ({ isCourseOpen, onCourseClose, isOpen, onClose, openSidebar }) => {
   const [coursePlaces, setCoursePlaces] = useRecoilState(selectPlaceState);
 
   const handleSavePlaces = async () => {
-    try {
-      for (const place of coursePlaces) {
-        const placesData = {
-          address_name: place.address_name,
-          id: place.id,
-          phone: place.phone,
-          place_name: place.place_name,
-          place_url: place.place_url,
-          road_address_name: place.road_address_name,
-          x: place.x,
-          y: place.y,
-        };
-
-        await create(placesData);
-      }
-      console.log("모든 장소 보내기 성공");
-    } catch (error) {
-      console.error("error:", error);
-    }
+    await createCourse(coursePlaces);
   };
 
   const handleDeletePlace = (idToDelete) => {
