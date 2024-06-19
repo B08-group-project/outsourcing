@@ -9,7 +9,7 @@ const Signup = () => {
   const confirmationRef = useRef(null);
   const navigator = useNavigate();
 
-  const OnclickSignup = async () => {
+  const onclickSignup = async () => {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
     const nickname = nicknameRef.current.value;
@@ -79,7 +79,7 @@ const Signup = () => {
           ref={confirmationRef}
           className=" px-2 py-2 rounded-md w-full ba bg border-2 text-xs"
         />
-        <button onClick={OnclickSignup} className=" bg-sky-300 p-2  rounded text-white text-xs">
+        <button onClick={onclickSignup} className=" bg-sky-300 p-2  rounded text-white text-xs">
           회원가입
         </button>
         <div className=" text-xs flex justify-between">
