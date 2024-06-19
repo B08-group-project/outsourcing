@@ -1,15 +1,12 @@
 import { useRef } from "react";
 import supabase from "../supabase/supabase";
 import { useNavigate, Link } from "react-router-dom";
-import userState from "../recoil/atom/user";
-import { useRecoilState } from "recoil";
 
 const Signup = () => {
   const nicknameRef = useRef(null);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const confirmationRef = useRef(null);
-  const [user, setUser] = useRecoilState(userState);
   const navigator = useNavigate();
 
   const OnclickSignup = async () => {
@@ -39,7 +36,6 @@ const Signup = () => {
       email,
       password,
     });
-    setUser(data);
 
     const { error } = await supabase.from("users").insert({
       id: data.user.id,
