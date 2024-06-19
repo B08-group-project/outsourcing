@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
-import { Map, MapMarker, Polyline } from "react-kakao-maps-sdk";
+import { CustomOverlayMap, Map, MapMarker, Polyline } from "react-kakao-maps-sdk";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { MARKER_IMG } from "../../constants/Category";
-import { searchCategoryState, searchData, searchKeywordState, selectPlaceState } from "../../recoil/atom/searchAtom";
+import {
+  clickedPlaceState,
+  searchCategoryState,
+  searchData,
+  searchKeywordState,
+  selectPlaceState,
+} from "../../recoil/atom/searchAtom";
 
 const { kakao } = window;
 
