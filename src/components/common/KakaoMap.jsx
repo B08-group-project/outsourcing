@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { Map, MapMarker, Polyline } from "react-kakao-maps-sdk";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { MARKER_IMG } from "../../constants/Category";
 import { searchCategoryState, searchData, searchKeywordState, selectPlaceState } from "../../recoil/atom/searchAtom";
@@ -8,13 +8,13 @@ const { kakao } = window;
 
 function KakaoMap() {
   const [level, setLevel] = useState(3);
-  const [info, setInfo] = useState();
+  // const [info, setInfo] = useState();
   const [map, setMap] = useState();
   const [location, setLocation] = useState(null);
   const keyword = useRecoilValue(searchKeywordState);
   const category = useRecoilValue(searchCategoryState);
   const setSearchData = useSetRecoilState(searchData);
-  const markers = useRecoilValue(selectPlaceState);
+  const selectedPlaces = useRecoilValue(selectPlaceState);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
@@ -48,6 +48,10 @@ function KakaoMap() {
     );
   }, [map, keyword, category]);
 
+  const getPath = () => {
+    return selectedPlaces.map((place) => ({ lat: place.y, lng: place.x }));
+  };
+
   const successHandler = (response) => {
     const { latitude, longitude } = response.coords;
     setLocation({ latitude, longitude });
@@ -60,22 +64,39 @@ function KakaoMap() {
   return (
     <Map
       center={{ lat: location ? location.latitude : 33.5563, lng: location ? location.longitude : 126.79581 }}
-      style={{ width: "100%", height: "90vh" }} // 지도 크기
+      style={{ width: "100%", height: "100vh" }} // 지도 크기
       level={level}
       onCreate={setMap}
     >
-      {markers.map((marker) => (
+      {selectedPlaces.map((marker) => (
         <MapMarker
           key={`marker-${marker.id}`}
           position={{ lat: marker.y, lng: marker.x }}
           image={{
             src: MARKER_IMG[marker.category_group_code],
-            size: { width: 30, height: 30 },
+            size: { width: 45, height: 45 },
           }}
         />
       ))}
-      <button onClick={() => setLevel(level + 1)}>-</button>
-      <button onClick={() => setLevel(level - 1)}>+</button>
+      <Polyline
+        path={[getPath()]}
+        strokeWeight={5} // 선의 두께 입니다
+        strokeColor={"#4D99E5"} // 선의 색깔입니다
+        strokeOpacity={1} // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+        strokeStyle={"solid"} // 선의 스타일입니다
+      />
+      <button
+        className="fixed bottom-7 left-1 w-[2rem] h-[2rem] p-1 rounded-lg bg-white text-gray-600 z-30 border border-gray-400"
+        onClick={() => setLevel(level + 1)}
+      >
+        -
+      </button>
+      <button
+        className="fixed bottom-16 left-1 w-[2rem] h-[2rem] p-1 rounded-lg bg-white text-gray-600 z-30 border border-gray-400"
+        onClick={() => setLevel(level - 1)}
+      >
+        +
+      </button>
     </Map>
   );
 }
