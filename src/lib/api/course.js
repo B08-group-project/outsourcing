@@ -26,10 +26,12 @@ export const createCourse = async (coursePlaces) => {
       road_address_name: place.road_address_name,
       x: place.x,
       y: place.y,
+      category_group_code: place.category_group_code,
     };
 
     await createCoursePlaces(placesData);
     alert("저장에 성공하셨습니다");
+    return result;
   }
 };
 
@@ -45,6 +47,7 @@ const createCoursePlaces = async (placesData) => {
       place_url: placesData.place_url,
       x: placesData.x,
       y: placesData.y,
+      category_group_code: placesData.category_group_code,
     });
     return result;
   } catch (error) {
