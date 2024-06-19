@@ -15,6 +15,7 @@ function KakaoMap() {
   const category = useRecoilValue(searchCategoryState);
   const setSearchData = useSetRecoilState(searchData);
   const selectedPlaces = useRecoilValue(selectPlaceState);
+  const clickedPlace = useRecoilValue(clickedPlaceState);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
@@ -61,6 +62,13 @@ function KakaoMap() {
     console.log(error);
   };
 
+  useEffect(() => {
+    if (map && clickedPlace) {
+      const placeLocation = new kakao.maps.LatLng(clickedPlace.y, clickedPlace.x);
+      map.setCenter(placeLocation);
+    }
+  }, [map, clickedPlace]);
+
   return (
     <Map
       center={{ lat: location ? location.latitude : 33.5563, lng: location ? location.longitude : 126.79581 }}
@@ -97,6 +105,20 @@ function KakaoMap() {
       >
         +
       </button>
+
+      {clickedPlace && (
+        <CustomOverlayMap position={{ lat: clickedPlace.y, lng: clickedPlace.x }}>
+          <div className="relative bg-blue-50 rounded-lg shadow-lg p-4 max-w-xs top-[-80px] border border-blue-500">
+            <div className="flex flex-col text-left">
+              <span className="text-lg font-bold text-gray-800">
+                <a href={clickedPlace.place_url} target="_blank" rel="noopener noreferrer">
+                  {clickedPlace.place_name} →
+                </a>
+              </span>
+            </div>
+          </div>
+        </CustomOverlayMap>
+      )}
     </Map>
   );
 }
