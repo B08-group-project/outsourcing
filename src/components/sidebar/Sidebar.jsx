@@ -94,7 +94,7 @@ function Sidebar({ isOpen, onClose }) {
           }`}
           onClick={() => setCategoryRecoil("CT1")}
         >
-          영화관
+          문화생활
         </button>
       </div>
       <main className="overflow-y-scroll h-[75%]">
