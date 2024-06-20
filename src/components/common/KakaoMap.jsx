@@ -173,7 +173,7 @@ function KakaoMap({ isSidebarOpen }) {
         +
       </button>
       <button
-        className="fixed top-[50px] left-4 w-[5rem] h-[2rem] p-1 rounded-lg bg-white text-gray-600 z-30 border border-gray-400"
+        className="fixed top-[80px] left-4 w-[5rem] h-[2rem] p-1 rounded-lg bg-white text-gray-600 z-30 border border-gray-400"
         onClick={setCurrentPosition}
       >
         {isCurrentLoading ? "로딩중" : "현재위치"}
