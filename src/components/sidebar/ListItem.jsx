@@ -1,13 +1,15 @@
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { searchData, selectPlaceState } from "../../recoil/atom/searchAtom";
+import { searchData, searchclickedPlace, selectPlaceState } from "../../recoil/atom/searchAtom";
 import { useEffect, useState } from "react";
 
 const ListItem = ({ index, places }) => {
   const [isCheck, setIsCheck] = useState(false);
   const [datePlace, setDatePlace] = useRecoilState(selectPlaceState);
   const setSearchedData = useSetRecoilState(searchData);
+  const setClickPlace = useSetRecoilState(searchclickedPlace);
 
   useEffect(() => {
+    // console.log("places::", places);
     const foundItem = datePlace.find((item) => item.id === places.id);
     if (foundItem) {
       setIsCheck(true);
@@ -26,6 +28,7 @@ const ListItem = ({ index, places }) => {
           return item;
         });
       });
+      setClickPlace({});
       setDatePlace((prev) => {
         return prev.filter((data) => data.id !== places.id);
       });
@@ -38,6 +41,7 @@ const ListItem = ({ index, places }) => {
           return item;
         });
       });
+      setClickPlace(places);
       setDatePlace((prev) => [...prev, places]);
     }
     setIsCheck(!isCheck);

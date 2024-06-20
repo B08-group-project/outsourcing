@@ -34,3 +34,8 @@ export const pagesState = atom({
   key: "pagesState",
   default: 0,
 });
+
+export const searchclickedPlace = atom({
+  key: "searchclickedPlace",
+  default: {},
+});

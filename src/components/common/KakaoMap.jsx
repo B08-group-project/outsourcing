@@ -9,6 +9,7 @@ import {
   searchData,
   searchDataFallback,
   searchKeywordState,
+  searchclickedPlace,
   selectPlaceState,
 } from "../../recoil/atom/searchAtom";
 import { useRecoilState } from "recoil";
@@ -28,6 +29,7 @@ function KakaoMap() {
   const selectedPlaces = useRecoilValue(selectPlaceState);
   const clickedPlace = useRecoilValue(clickedPlaceState);
   const notSearchData = useSetRecoilState(searchDataFallback);
+  const searchClickedPlace = useRecoilValue(searchclickedPlace);
 
   const detectRef = (ref) => {
     setCurrentPage(ref);
@@ -51,7 +53,6 @@ function KakaoMap() {
         }
         if (status === kakao.maps.services.Status.OK) {
           setPages(pagination.last);
-          console.log(currentPage);
           pagination.gotoPage(currentPage);
 
           const bounds = new kakao.maps.LatLngBounds();
@@ -95,6 +96,11 @@ function KakaoMap() {
       map.setCenter(placeLocation);
     }
   }, [map, clickedPlace]);
+
+  useEffect(() => {
+    // console.log(searchClickedPlace);
+    console.log(Object.keys(searchClickedPlace));
+  }, [searchClickedPlace]);
 
   return (
     <Map
@@ -169,6 +175,19 @@ function KakaoMap() {
               <span className="text-lg font-bold text-gray-800">
                 <a href={clickedPlace.place_url} target="_blank" rel="noopener noreferrer">
                   {clickedPlace.place_name}
+                </a>
+              </span>
+            </div>
+          </div>
+        </CustomOverlayMap>
+      )}
+      {Object.keys(searchClickedPlace).length >= 1 && (
+        <CustomOverlayMap position={{ lat: searchClickedPlace.y, lng: searchClickedPlace.x }}>
+          <div className="relative bg-blue-50 rounded-lg shadow-lg p-4 max-w-xs top-[-80px] border border-blue-500">
+            <div className="flex flex-col text-left">
+              <span className="text-lg font-bold text-gray-800">
+                <a href={searchClickedPlace.place_url} target="_blank" rel="noopener noreferrer">
+                  {searchClickedPlace.place_name}
                 </a>
               </span>
             </div>
