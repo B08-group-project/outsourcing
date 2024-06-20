@@ -87,7 +87,7 @@ const Signup = () => {
         />
         <input
           type="password"
-          placeholder="Password (6자 입력해주세요)"
+          placeholder="confirmation"
           ref={confirmationRef}
           className=" px-2 py-2 rounded-md w-full ba bg border-2 text-xs"
         />

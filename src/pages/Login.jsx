@@ -20,7 +20,7 @@ const Login = () => {
       alert("아이디를 입력해주세요");
       return;
     }
-    if (password.length === 0 || password.length < 6) {
+    if (password.length < 6) {
       alert("비밀번호를 입력해주세요 (6자 이상)");
       return;
     }
