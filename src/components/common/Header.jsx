@@ -17,24 +17,23 @@ function Header() {
   });
 
   const onClickLogout = async () => {
-    const { data } = await supabase.auth.signOut();
+    await supabase.auth.signOut();
     navigator("/login");
     setIsLogin(false);
   };
 
   return (
     <header className="fixed top-0 left-0 z-10 flex items-center justify-between w-full px-6 py-2 bg-white">
-      <span className="w-6 h-6"></span>
       <Link to="/">
         <img className="w-[200px] h-[50px]" src={logoImg} />
       </Link>
-      <div className="flex gap-2">
+      <div className="flex gap-6">
+        <Link to="/mypage" className="w-6 h-6 mt-1">
+          <img src={userImg} alt="마이페이지 링크" />
+        </Link>
         <button onClick={onClickLogout} className=" bg-sky-300 p-2  rounded text-white text-xs">
           로그아웃
         </button>
-        <Link to="/mypage" className="w-6 h-6">
-          <img src={userImg} alt="마이페이지 링크" />
-        </Link>
       </div>
     </header>
   );
