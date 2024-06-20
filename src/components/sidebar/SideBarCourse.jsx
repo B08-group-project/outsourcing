@@ -6,14 +6,26 @@ import { useRecoilState } from "recoil";
 import { createCourse } from "../../lib/api/course";
 import { selectPlaceState } from "../../recoil/atom/searchAtom";
 import FixedButton from "../common/FixedButton";
+import { QueryClient, useMutation } from "@tanstack/react-query";
 
 const SideBarCourse = ({ isCourseOpen, onCourseClose, isOpen, onClose, openSidebar }) => {
   const [coursePlaces, setCoursePlaces] = useRecoilState(selectPlaceState);
+  const queryClient = new QueryClient();
+
+  const mutation = useMutation({
+    mutationFn: createCourse,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["coursePlaces"]);
+      setCoursePlaces([]);
+    },
+  });
 
   const handleSavePlaces = async () => {
-    await createCourse(coursePlaces);
-    setCoursePlaces([]);
+    mutation.mutate(coursePlaces);
+    // await createCourse(coursePlaces);
+    // setCoursePlaces([]);
   };
+
   // 장소를 삭제하는 함수
   const handleDeletePlace = (idToDelete) => {
     const updatedPlaces = coursePlaces.filter((place) => place.id !== idToDelete);
