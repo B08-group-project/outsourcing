@@ -31,8 +31,11 @@ const Signup = () => {
       alert("Email을 입력해주세요");
       return;
     }
-    if (password.length === 0 || password > 6) {
-      alert("Password를 6자 이상입력해주세요");
+    if (error && error.message === "Unable to validate email address: invalid format") {
+      alert("이메일 형식으로 작성하세요");
+    }
+    if (error && error.message === "Password should be at least 6 characters.") {
+      alert("비밀번호 6자 이상 입력해주세요");
       return;
     }
     if (password !== confirmation) {
@@ -42,6 +45,7 @@ const Signup = () => {
 
     if (error && error.message === "User already registered") {
       alert("중복된 아이디입니다.");
+      return;
     }
     await supabase.from("users").insert({
       id: data.user.id,

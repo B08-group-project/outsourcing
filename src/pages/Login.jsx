@@ -26,6 +26,7 @@ const Login = () => {
     }
     if (error && error.message) {
       alert("아이디 비밀번호를 확인해주세요");
+      return;
     }
     if (data.user.id) {
       navigator("/");
