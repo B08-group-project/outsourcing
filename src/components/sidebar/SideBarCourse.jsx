@@ -22,8 +22,6 @@ const SideBarCourse = ({ isCourseOpen, onCourseClose, isOpen, onClose, openSideb
 
   const handleSavePlaces = async () => {
     mutation.mutate(coursePlaces);
-    // await createCourse(coursePlaces);
-    // setCoursePlaces([]);
   };
 
   // 장소를 삭제하는 함수
