@@ -58,7 +58,7 @@ const Mypage = () => {
         <>
             {/* 왼쪽 */}
             <div className='flex w-full h-screen'>
-                <button className='absolute top-[50px] left-[10px] rounded-2xl bg-sky-300 p-2 text-white' onClick={() => navigate(-1)}>뒤로 가기</button>
+                <button className='absolute top-[70px] left-[10px] rounded-2xl bg-sky-300 p-2 text-white' onClick={() => navigate(-1)}>뒤로 가기</button>
                 <div className='flex-[3] flex justify-center items-center'>
                     <div className='flex flex-col w-80 justify-center absolute top-[200px] border-double shadow-xl rounded-2xl border-sky-500 p-8'>
                         <header className='flex items-start mb-6 text-4xl font-black justify-left'>My Page</header>
@@ -74,7 +74,7 @@ const Mypage = () => {
 
                 {/* 오른쪽 */}
                 <div className='flex-[7]'>
-                    <h1 className='mx-10 mt-12 mb-4 text-2xl font-bold'>저장된 코스</h1>
+                    <h1 className='mx-10 mt-[80px] mb-8 text-2xl font-bold'>저장된 코스</h1>
                     <div className='flex flex-wrap mx-6'>
                         {coursePlaces.map((courses, placeIndex) => (
                             <div key={placeIndex} className='w-full mb-8'>
