@@ -57,17 +57,27 @@ const SideBarCourse = ({ isCourseOpen, onCourseClose, isOpen, onClose, openSideb
         <style>{`.overflow-y-auto::-webkit-scrollbar {display: none;}`}</style>
         {coursePlaces.map((place, index) => (
           <div key={place.id}>
-            <div className=" mt-[20px] ml-[10px] mb-[5px] flex text-[25px]">{index + 1}</div>
+            <div className="mt-[20px] ml-[10px] mb-[5px] flex text-[25px]">{index + 1}</div>
             <div className="shadow-lg flex items-center justify-between bg-white p-4">
               <PlacesItem place={place} />
               <div>
-                <button className="mb-[10px] mr-1" onClick={() => handleUp(index)}>
+                <button
+                  className="mb-[10px] mr-1 transition-transform transform hover:-translate-y-1 hover:scale-125 "
+                  onClick={() => handleUp(index)}
+                >
                   ↑
                 </button>
                 <button onClick={() => handleDeletePlace(place.id)}>
-                  <img className="w-[25px] h-[25px] mr-1" src={closeBtn} alt="close button" />
+                  <img
+                    className="w-[25px] h-[25px] mr-1 transition-transform transform hover:scale-125"
+                    src={closeBtn}
+                    alt="close button"
+                  />
                 </button>
-                <button className="mt-[10px] mr-1" onClick={() => handleDown(index)}>
+                <button
+                  className="mt-[10px] mr-1 transition-transform transform hover:translate-y-1 hover:scale-125"
+                  onClick={() => handleDown(index)}
+                >
                   ↓
                 </button>
               </div>
