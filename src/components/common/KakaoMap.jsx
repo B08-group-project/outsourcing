@@ -13,9 +13,9 @@ import {
 
 const { kakao } = window;
 
-function KakaoMap() {
+function KakaoMap({ isSidebarOpen }) {
   const [level, setLevel] = useState(3);
-  // const [info, setInfo] = useState();
+  const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
   const [location, setLocation] = useState(null);
   const [isCurrentLoading, setIsCurrentLoading] = useState(false);
@@ -27,9 +27,17 @@ function KakaoMap() {
   const clickedPlace = useRecoilValue(clickedPlaceState);
   const notSearchData = useSetRecoilState(searchDataFallback);
 
-  // useEffect(() => {
-  //   navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
-  // }, []);
+  useEffect(() => {
+    if (!map) return;
+    if (selectedPlaces.length === 0) return;
+    const bounds = new kakao.maps.LatLngBounds();
+
+    for (var i = 0; i < selectedPlaces.length; i++) {
+      bounds.extend(new kakao.maps.LatLng(selectedPlaces[i].y, selectedPlaces[i].x));
+    }
+
+    map.setBounds(bounds);
+  }, [selectedPlaces]);
 
   useEffect(() => {
     if (!map) return;
@@ -48,14 +56,21 @@ function KakaoMap() {
           setSearchData([]);
         }
         if (status === kakao.maps.services.Status.OK) {
-          const bounds = new kakao.maps.LatLngBounds();
           const checkedData = data.map((item) => ({ ...item, checked: false }));
           setSearchData(checkedData);
+          let markers = [];
+          const bounds = new kakao.maps.LatLngBounds();
 
           for (var i = 0; i < data.length; i++) {
+            markers.push({
+              position: {
+                lat: data[i].y,
+                lng: data[i].x,
+              },
+            });
             bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
           }
-
+          setMarkers(markers);
           map.setBounds(bounds);
         }
       },
@@ -103,6 +118,14 @@ function KakaoMap() {
         }
       }}
     >
+      {isSidebarOpen &&
+        markers
+          .filter((marker) => {
+            return !selectedPlaces.some((place) => place.x === marker.position.lng && place.y === marker.position.lat);
+          })
+          .map((marker) => (
+            <MapMarker key={`marker-${marker.position.lat},${marker.position.lng}`} position={marker.position} />
+          ))}
       {selectedPlaces.map((marker) => (
         <MapMarker
           key={`marker-${marker.id}`}

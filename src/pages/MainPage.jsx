@@ -25,7 +25,7 @@ function MainPage() {
 
   return (
     <>
-      <KakaoMap />
+      <KakaoMap isSidebarOpen={isSidebarOpen} />
       <FixedButton text="코스 등록" onClick={openSideBarCourse} />
       <SideBarCourse
         isCourseOpen={isSideBarCourseOpen}
