@@ -41,11 +41,15 @@ const SideBarCourse = ({ isCourseOpen, onCourseClose, isOpen, onClose, openSideb
         <style>{`.overflow-y-auto::-webkit-scrollbar {display: none;}`}</style>
         {coursePlaces.map((place) => (
           <div key={place.id}>
-            <div className="flex items-center justify-between bg-white p-4">
+            <div className="shadow-lg flex items-center justify-between bg-white p-4">
               <PlacesItem place={place} />
-              <button onClick={() => handleDeletePlace(place.id)}>
-                <img className="w-[25px] h-[25px] mr-2" src={closeBtn} alt="close button" />
-              </button>
+              <dev>
+                <button className="mb-[10px]">↑</button>
+                <button onClick={() => handleDeletePlace(place.id)}>
+                  <img className="w-[25px] h-[25px] mr-1" src={closeBtn} alt="close button" />
+                </button>
+                <button className="mt-[10px]">↓</button>
+              </dev>
             </div>
             <div className="my-2 text-gray-400">▼</div>
           </div>
