@@ -4,21 +4,24 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { MARKER_IMG } from "../../constants/Category";
 import {
   clickedPlaceState,
+  pagesState,
   searchCategoryState,
   searchData,
   searchDataFallback,
   searchKeywordState,
   selectPlaceState,
 } from "../../recoil/atom/searchAtom";
+import { useRecoilState } from "recoil";
 
 const { kakao } = window;
 
 function KakaoMap() {
   const [level, setLevel] = useState(3);
-  // const [info, setInfo] = useState();
   const [map, setMap] = useState();
   const [location, setLocation] = useState(null);
   const [isCurrentLoading, setIsCurrentLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pages, setPages] = useRecoilState(pagesState);
   const keyword = useRecoilValue(searchKeywordState);
   const category = useRecoilValue(searchCategoryState);
   const setSearchData = useSetRecoilState(searchData);
@@ -26,9 +29,9 @@ function KakaoMap() {
   const clickedPlace = useRecoilValue(clickedPlaceState);
   const notSearchData = useSetRecoilState(searchDataFallback);
 
-  // useEffect(() => {
-  //   navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
-  // }, []);
+  const detectRef = (ref) => {
+    setCurrentPage(ref);
+  };
 
   useEffect(() => {
     if (!map) return;
@@ -41,12 +44,16 @@ function KakaoMap() {
 
     ps.keywordSearch(
       keyword,
-      (data, status) => {
+      (data, status, pagination) => {
         if (status === kakao.maps.services.Status.ZERO_RESULT) {
           notSearchData(true);
           setSearchData([]);
         }
         if (status === kakao.maps.services.Status.OK) {
+          setPages(pagination.last);
+          console.log(currentPage);
+          pagination.gotoPage(currentPage);
+
           const bounds = new kakao.maps.LatLngBounds();
           const checkedData = data.map((item) => ({ ...item, checked: false }));
           setSearchData(checkedData);
@@ -60,7 +67,7 @@ function KakaoMap() {
       },
       options,
     );
-  }, [map, keyword, category]);
+  }, [map, keyword, category, currentPage]);
 
   const getPath = () => {
     return selectedPlaces.map((place) => ({ lat: place.y, lng: place.x }));
@@ -132,13 +139,36 @@ function KakaoMap() {
         {isCurrentLoading ? "로딩중" : "현재위치"}
       </button>
 
+      {pages && (
+        <>
+          <button
+            onClick={() => detectRef(1)}
+            className="fixed bottom-2 left-[300px] w-[2rem] h-[2rem] p-1 rounded-lg bg-white text-gray-600 z-30 border border-gray-400"
+          >
+            1
+          </button>
+          <button
+            onClick={() => detectRef(2)}
+            className="fixed bottom-2 left-[340px] w-[2rem] h-[2rem] p-1 rounded-lg bg-white text-gray-600 z-30 border border-gray-400"
+          >
+            2
+          </button>
+          <button
+            onClick={() => detectRef(3)}
+            className="fixed bottom-2 left-[380px] w-[2rem] h-[2rem] p-1 rounded-lg bg-white text-gray-600 z-30 border border-gray-400"
+          >
+            3
+          </button>
+        </>
+      )}
+
       {clickedPlace && (
         <CustomOverlayMap position={{ lat: clickedPlace.y, lng: clickedPlace.x }}>
           <div className="relative bg-blue-50 rounded-lg shadow-lg p-4 max-w-xs top-[-80px] border border-blue-500">
             <div className="flex flex-col text-left">
               <span className="text-lg font-bold text-gray-800">
                 <a href={clickedPlace.place_url} target="_blank" rel="noopener noreferrer">
-                  {clickedPlace.place_name} →
+                  {clickedPlace.place_name}
                 </a>
               </span>
             </div>

@@ -29,3 +29,8 @@ export const searchDataFallback = atom({
   key: "searchDataFallback",
   default: false,
 });
+
+export const pagesState = atom({
+  key: "pagesState",
+  default: 0,
+});

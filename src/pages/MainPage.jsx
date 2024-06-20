@@ -2,10 +2,13 @@ import { useState } from "react";
 import FixedButton from "../components/common/FixedButton";
 import KakaoMap from "../components/common/KakaoMap";
 import SideBarCourse from "../components/sidebar/SideBarCourse";
+import { useSetRecoilState } from "recoil";
+import { pagesState } from "../recoil/atom/searchAtom";
 
 function MainPage() {
   const [isSideBarCourseOpen, setIsSideBarCourseOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const setPages = useSetRecoilState(pagesState);
 
   const openSideBarCourse = () => {
     setIsSideBarCourseOpen(true);
@@ -13,14 +16,17 @@ function MainPage() {
 
   const closeSideBarCourse = () => {
     setIsSideBarCourseOpen(false);
+    setPages(0);
   };
 
   const openSidebar = () => {
     setIsSidebarOpen(true);
+    setPages(3);
   };
 
   const closeSidebar = () => {
     setIsSidebarOpen(false);
+    setPages(0);
   };
 
   return (

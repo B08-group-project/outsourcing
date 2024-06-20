@@ -50,7 +50,6 @@ const SideBarCourse = ({ isCourseOpen, onCourseClose, isOpen, onClose, openSideb
             <div className="my-2 text-gray-400">▼</div>
           </div>
         ))}
-
         <div className="my-5">
           <button
             className="w-[300px] text-2xl h-12 border-2 border-gray-300 rounded-[10px] bg-gray-100 mb-[100px]"
