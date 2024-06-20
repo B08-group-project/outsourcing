@@ -4,12 +4,15 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { MARKER_IMG } from "../../constants/Category";
 import {
   clickedPlaceState,
+  pagesState,
   searchCategoryState,
   searchData,
   searchDataFallback,
   searchKeywordState,
+  searchclickedPlace,
   selectPlaceState,
 } from "../../recoil/atom/searchAtom";
+import { useRecoilState } from "recoil";
 
 const { kakao } = window;
 
@@ -19,6 +22,9 @@ function KakaoMap({ isSidebarOpen }) {
   const [map, setMap] = useState();
   const [location, setLocation] = useState(null);
   const [isCurrentLoading, setIsCurrentLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [activePage, setActivePage] = useState(0);
+  const [pages, setPages] = useRecoilState(pagesState);
   const [overlayVisible, setOverlayVisible] = useState(false);
   const keyword = useRecoilValue(searchKeywordState);
   const category = useRecoilValue(searchCategoryState);
@@ -26,6 +32,12 @@ function KakaoMap({ isSidebarOpen }) {
   const selectedPlaces = useRecoilValue(selectPlaceState);
   const clickedPlace = useRecoilValue(clickedPlaceState);
   const notSearchData = useSetRecoilState(searchDataFallback);
+  const searchClickedPlace = useRecoilValue(searchclickedPlace);
+
+  const detectRef = (ref) => {
+    setCurrentPage(ref);
+    setActivePage(ref);
+  };
 
   useEffect(() => {
     if (!map) return;
@@ -50,16 +62,21 @@ function KakaoMap({ isSidebarOpen }) {
 
     ps.keywordSearch(
       keyword,
-      (data, status) => {
+      (data, status, pagination) => {
         if (status === kakao.maps.services.Status.ZERO_RESULT) {
           notSearchData(true);
           setSearchData([]);
+          setPages([]);
         }
         if (status === kakao.maps.services.Status.OK) {
+          const pageArr = Array.from({ length: pagination.last }, (_, index) => index + 1);
+          setPages(pageArr);
+          pagination.gotoPage(currentPage);
+
+          const bounds = new kakao.maps.LatLngBounds();
           const checkedData = data.map((item) => ({ ...item, checked: false }));
           setSearchData(checkedData);
           let markers = [];
-          const bounds = new kakao.maps.LatLngBounds();
 
           for (var i = 0; i < data.length; i++) {
             markers.push({
@@ -76,7 +93,7 @@ function KakaoMap({ isSidebarOpen }) {
       },
       options,
     );
-  }, [map, keyword, category]);
+  }, [map, keyword, category, currentPage]);
 
   const getPath = () => {
     return selectedPlaces.map((place) => ({ lat: place.y, lng: place.x }));
@@ -162,13 +179,46 @@ function KakaoMap({ isSidebarOpen }) {
         {isCurrentLoading ? "로딩중" : "현재위치"}
       </button>
 
-      {overlayVisible && clickedPlace && (
+      {pages.length >= 1 &&
+        pages.map((page) => {
+          const leftPosition = 33 + (page - 1) * 3;
+          return (
+            <button
+              key={page}
+              name={page}
+              onClick={() => detectRef(page)}
+              style={{
+                left: `${leftPosition}%`,
+                backgroundColor: activePage === page ? "#84BBF2" : "white",
+                color: activePage === page ? "white" : "gray",
+              }}
+              className="fixed bottom-2 w-[2rem] h-[2rem] p-1 rounded-lg bg-white text-gray-600 z-30 border border-gray-400"
+            >
+              {page}
+            </button>
+          );
+        })}
+
+      {clickedPlace && overlayVisible && clickedPlace && (
         <CustomOverlayMap position={{ lat: clickedPlace.y, lng: clickedPlace.x }}>
           <div className="relative bg-blue-50 rounded-lg shadow-lg p-4 max-w-xs top-[-80px] border border-blue-500">
             <div className="flex flex-col text-left">
               <span className="text-lg font-bold text-gray-800">
                 <a href={clickedPlace.place_url} target="_blank" rel="noopener noreferrer">
-                  {clickedPlace.place_name} →
+                  {clickedPlace.place_name}
+                </a>
+              </span>
+            </div>
+          </div>
+        </CustomOverlayMap>
+      )}
+      {Object.keys(searchClickedPlace).length >= 1 && (
+        <CustomOverlayMap position={{ lat: searchClickedPlace.y, lng: searchClickedPlace.x }}>
+          <div className="relative bg-blue-50 rounded-lg shadow-lg p-4 max-w-xs top-[-80px] border border-blue-500">
+            <div className="flex flex-col text-left">
+              <span className="text-lg font-bold text-gray-800">
+                <a href={searchClickedPlace.place_url} target="_blank" rel="noopener noreferrer">
+                  {searchClickedPlace.place_name}
                 </a>
               </span>
             </div>

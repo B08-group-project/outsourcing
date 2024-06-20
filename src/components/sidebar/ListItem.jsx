@@ -1,13 +1,15 @@
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { searchData, selectPlaceState } from "../../recoil/atom/searchAtom";
+import { searchData, searchclickedPlace, selectPlaceState } from "../../recoil/atom/searchAtom";
 import { useEffect, useState } from "react";
 
 const ListItem = ({ index, places }) => {
   const [isCheck, setIsCheck] = useState(false);
   const [datePlace, setDatePlace] = useRecoilState(selectPlaceState);
   const setSearchedData = useSetRecoilState(searchData);
+  const setClickPlace = useSetRecoilState(searchclickedPlace);
 
   useEffect(() => {
+    // console.log("places::", places);
     const foundItem = datePlace.find((item) => item.id === places.id);
     if (foundItem) {
       setIsCheck(true);
@@ -26,6 +28,7 @@ const ListItem = ({ index, places }) => {
           return item;
         });
       });
+      setClickPlace({});
       setDatePlace((prev) => {
         return prev.filter((data) => data.id !== places.id);
       });
@@ -38,6 +41,7 @@ const ListItem = ({ index, places }) => {
           return item;
         });
       });
+      setClickPlace(places);
       setDatePlace((prev) => [...prev, places]);
     }
     setIsCheck(!isCheck);
@@ -47,7 +51,7 @@ const ListItem = ({ index, places }) => {
     <li className="flex relative items-center mb-4 border-b border-solid border-gray-400 w-[90%] mx-auto pb-3">
       <div className="flex gap-5 items-center">
         <span className="font-semibold">{index + 1}</span>
-        <a href={places.place_url} target="_blank">
+        <div>
           <h5 className="mb-2 font-semibold ">{places.place_name}</h5>
           {places.road_address_name ? (
             <>
@@ -57,7 +61,7 @@ const ListItem = ({ index, places }) => {
             <span className="">{places.address_name}</span>
           )}
           {places.phone ? <span className="ml-3"> {`tel: ${places.phone}`}</span> : null}
-        </a>
+        </div>
       </div>
       <input
         className="w-[20px] h-[20px] cursor-pointer absolute right-0"
