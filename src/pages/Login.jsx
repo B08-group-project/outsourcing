@@ -8,11 +8,11 @@ const Login = () => {
   const navigator = useNavigate();
   const token = localStorage.getItem("sb-dsvfmxsahcirxphfczum-auth-token");
 
-  // useEffect(() => {
-  //   if (token) {
-  //     navigator("/");
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (token) {
+      navigator("/");
+    }
+  }, []);
 
   const onClickLogin = async () => {
     const email = emailRef.current.value;
@@ -28,16 +28,15 @@ const Login = () => {
     if (data.user.id) {
       navigator("/");
     }
-  };
-
-  const onClickGitHub = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "github",
-    });
-    // await supabase.from("users").insert({
-    //   id: data.user.id,
-    //   email: data.user.email,
-    // });
+    // const onClinkGithub = async () => {
+    //   const { data, error } = await supabase.auth.signInWithOAuth({
+    //     provider: "github",
+    //   });
+    //   await supabase.from("users").insert({
+    //     id: data.user.id,
+    //     email: data.user.email,
+    //   });
+    // };
   };
 
   return (
@@ -65,7 +64,7 @@ const Login = () => {
             회원가입
           </Link>
         </div>
-        <button onClick={onClickGitHub}> 깃허브</button>
+        {/* <button onClick={onClinkGithub}> 깃허브</button> */}
       </div>
     </div>
   );

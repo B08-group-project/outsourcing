@@ -24,10 +24,12 @@ function Header() {
       <Link to="/">
         <div className="text-lg font-bold">로고</div>
       </Link>
-      <button onClick={onClickLogout}>로그아웃</button>
-      <Link to="/mypage" className="w-6 h-6">
-        <img src={userImg} alt="마이페이지 링크" />
-      </Link>
+      <div className="flex">
+        <button onClick={onClickLogout}>로그아웃</button>
+        <Link to="/mypage" className="w-6 h-6">
+          <img src={userImg} alt="마이페이지 링크" />
+        </Link>
+      </div>
     </header>
   );
 }
