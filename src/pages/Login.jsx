@@ -1,18 +1,20 @@
 import { useEffect, useRef } from "react";
 import supabase from "../supabase/supabase";
 import { Link, useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { loginOut } from "../recoil/atom/login";
 
 const Login = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const navigator = useNavigate();
-  const token = localStorage.getItem("sb-dsvfmxsahcirxphfczum-auth-token");
+  const [isLogin, setIsLogin] = useRecoilState(loginOut);
 
   useEffect(() => {
-    if (token) {
+    if (isLogin === true) {
       navigator("/");
     }
-  }, []);
+  });
 
   const onClickLogin = async () => {
     const email = emailRef.current.value;
@@ -27,16 +29,8 @@ const Login = () => {
     }
     if (data.user.id) {
       navigator("/");
+      setIsLogin(true);
     }
-    // const onClinkGithub = async () => {
-    //   const { data, error } = await supabase.auth.signInWithOAuth({
-    //     provider: "github",
-    //   });
-    //   await supabase.from("users").insert({
-    //     id: data.user.id,
-    //     email: data.user.email,
-    //   });
-    // };
   };
 
   return (
@@ -64,7 +58,6 @@ const Login = () => {
             회원가입
           </Link>
         </div>
-        {/* <button onClick={onClinkGithub}> 깃허브</button> */}
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import {
   clickedPlaceState,
   searchCategoryState,
   searchData,
+  searchDataFallback,
   searchKeywordState,
   selectPlaceState,
 } from "../../recoil/atom/searchAtom";
@@ -17,15 +18,17 @@ function KakaoMap() {
   // const [info, setInfo] = useState();
   const [map, setMap] = useState();
   const [location, setLocation] = useState(null);
+  const [isCurrentLoading, setIsCurrentLoading] = useState(false);
   const keyword = useRecoilValue(searchKeywordState);
   const category = useRecoilValue(searchCategoryState);
   const setSearchData = useSetRecoilState(searchData);
   const selectedPlaces = useRecoilValue(selectPlaceState);
   const clickedPlace = useRecoilValue(clickedPlaceState);
+  const notSearchData = useSetRecoilState(searchDataFallback);
 
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
-  }, []);
+  // useEffect(() => {
+  //   navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
+  // }, []);
 
   useEffect(() => {
     if (!map) return;
@@ -39,6 +42,10 @@ function KakaoMap() {
     ps.keywordSearch(
       keyword,
       (data, status) => {
+        if (status === kakao.maps.services.Status.ZERO_RESULT) {
+          notSearchData(true);
+          setSearchData([]);
+        }
         if (status === kakao.maps.services.Status.OK) {
           const bounds = new kakao.maps.LatLngBounds();
           const checkedData = data.map((item) => ({ ...item, checked: false }));
@@ -62,10 +69,17 @@ function KakaoMap() {
   const successHandler = (response) => {
     const { latitude, longitude } = response.coords;
     setLocation({ latitude, longitude });
+    setIsCurrentLoading(false);
   };
 
-  const errorHandler = (error) => {
-    console.log(error);
+  const errorHandler = () => {
+    setIsCurrentLoading(false);
+    alert("위치조회를 거절하셔서 현재위치로 이동할수없습니다");
+  };
+
+  const setCurrentPosition = () => {
+    setIsCurrentLoading(true);
+    navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
   };
 
   useEffect(() => {
@@ -110,6 +124,12 @@ function KakaoMap() {
         onClick={() => setLevel(level - 1)}
       >
         +
+      </button>
+      <button
+        className="fixed top-[50px] left-4 w-[5rem] h-[2rem] p-1 rounded-lg bg-white text-gray-600 z-30 border border-gray-400"
+        onClick={setCurrentPosition}
+      >
+        {isCurrentLoading ? "로딩중" : "현재위치"}
       </button>
 
       {clickedPlace && (
