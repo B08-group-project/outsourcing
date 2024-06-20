@@ -4,12 +4,11 @@ import KakaoMap from "../components/common/KakaoMap";
 import SideBarCourse from "../components/sidebar/SideBarCourse";
 import { useSetRecoilState } from "recoil";
 import { pagesState, searchclickedPlace } from "../recoil/atom/searchAtom";
-import { useRecoilState } from "recoil";
 
 function MainPage() {
   const [isSideBarCourseOpen, setIsSideBarCourseOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [pages, setPages] = useRecoilState(pagesState);
+  const setPages = useSetRecoilState(pagesState);
   const setClickPlace = useSetRecoilState(searchclickedPlace);
 
   const openSideBarCourse = () => {

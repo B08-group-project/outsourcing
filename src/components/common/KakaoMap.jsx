@@ -22,6 +22,7 @@ function KakaoMap() {
   const [location, setLocation] = useState(null);
   const [isCurrentLoading, setIsCurrentLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [activePage, setActivePage] = useState(0);
   const [pages, setPages] = useRecoilState(pagesState);
   const keyword = useRecoilValue(searchKeywordState);
   const category = useRecoilValue(searchCategoryState);
@@ -33,6 +34,7 @@ function KakaoMap() {
 
   const detectRef = (ref) => {
     setCurrentPage(ref);
+    setActivePage(ref);
   };
 
   useEffect(() => {
@@ -55,6 +57,7 @@ function KakaoMap() {
         if (status === kakao.maps.services.Status.OK) {
           const pageArr = Array.from({ length: pagination.last }, (_, index) => index + 1);
           setPages(pageArr);
+          pagination.gotoPage(currentPage);
 
           const bounds = new kakao.maps.LatLngBounds();
           const checkedData = data.map((item) => ({ ...item, checked: false }));
@@ -143,12 +146,17 @@ function KakaoMap() {
 
       {pages.length >= 1 &&
         pages.map((page) => {
-          const leftPosition = 300 + (page - 1) * 40;
+          const leftPosition = 33 + (page - 1) * 3;
           return (
             <button
               key={page}
+              name={page}
               onClick={() => detectRef(page)}
-              style={{ left: `${leftPosition}px` }}
+              style={{
+                left: `${leftPosition}%`,
+                backgroundColor: activePage === page ? "#84BBF2" : "white",
+                color: activePage === page ? "white" : "gray",
+              }}
               className="fixed bottom-2 w-[2rem] h-[2rem] p-1 rounded-lg bg-white text-gray-600 z-30 border border-gray-400"
             >
               {page}

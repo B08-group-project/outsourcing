@@ -103,7 +103,7 @@ function Sidebar({ isOpen, onClose }) {
       <main className="overflow-y-scroll h-[75%]">
         {sidebarData.length > 0 &&
           sidebarData.map((data, index) => <ListItem key={data.id} index={index} places={data} />)}
-        {fallback && <SearchFallback />}
+        {sidebarData.length === 0 && fallback && <SearchFallback />}
       </main>
     </div>
   );
