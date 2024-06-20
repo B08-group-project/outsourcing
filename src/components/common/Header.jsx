@@ -23,7 +23,7 @@ function Header() {
   };
 
   return (
-    <header className="w-full bg-white fixed top-0 left-0 flex justify-between items-center px-6 py-2 z-10">
+    <header className="fixed top-0 left-0 z-10 flex items-center justify-between w-full px-6 py-2 bg-white">
       <span className="w-6 h-6"></span>
       <Link to="/">
         <img className="w-[200px] h-[50px]" src={logoImg} />
