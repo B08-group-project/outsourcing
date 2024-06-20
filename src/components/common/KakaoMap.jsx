@@ -26,9 +26,17 @@ function KakaoMap() {
   const clickedPlace = useRecoilValue(clickedPlaceState);
   const notSearchData = useSetRecoilState(searchDataFallback);
 
-  // useEffect(() => {
-  //   navigator.geolocation.getCurrentPosition(successHandler, errorHandler);
-  // }, []);
+  useEffect(() => {
+    if (!map) return;
+    if (selectedPlaces.length === 0) return;
+    const bounds = new kakao.maps.LatLngBounds();
+
+    for (var i = 0; i < selectedPlaces.length; i++) {
+      bounds.extend(new kakao.maps.LatLng(selectedPlaces[i].y, selectedPlaces[i].x));
+    }
+
+    map.setBounds(bounds);
+  }, [selectedPlaces]);
 
   useEffect(() => {
     if (!map) return;
