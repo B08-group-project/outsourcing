@@ -1,6 +1,8 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import supabase from "../supabase/supabase";
 import { useNavigate, Link } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { loginOut } from "../recoil/atom/login";
 
 const Signup = () => {
   const nicknameRef = useRef(null);
@@ -8,6 +10,13 @@ const Signup = () => {
   const passwordRef = useRef(null);
   const confirmationRef = useRef(null);
   const navigator = useNavigate();
+  const [isLogin] = useRecoilState(loginOut);
+
+  useEffect(() => {
+    if (isLogin === true) {
+      navigator("/");
+    }
+  });
 
   const onClickSignup = async () => {
     const email = emailRef.current.value;
@@ -32,12 +41,15 @@ const Signup = () => {
       return;
     }
 
-    const { data } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
 
-    const { error } = await supabase.from("users").insert({
+    if (error && error.message === "User already registered") {
+      alert("중복된 아이디입니다.");
+    }
+    await supabase.from("users").insert({
       id: data.user.id,
       nickname,
       email,
@@ -65,7 +77,7 @@ const Signup = () => {
           type="email"
           placeholder="Email"
           ref={emailRef}
-          className=" px-2 py-1 rounded-md w-full border-2 text-xs"
+          className=" px-2 py-2 rounded-md w-full border-2 text-xs"
         />
         <input
           type="password"

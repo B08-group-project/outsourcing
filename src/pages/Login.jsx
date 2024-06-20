@@ -1,49 +1,40 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import supabase from "../supabase/supabase";
 import { Link, useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { loginOut } from "../recoil/atom/login";
 
 const Login = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
-
   const navigator = useNavigate();
+  const [isLogin, setIsLogin] = useRecoilState(loginOut);
+
+  useEffect(() => {
+    if (isLogin === true) {
+      navigator("/");
+    }
+  });
 
   const onClickLogin = async () => {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
 
-    if (email === 0) {
-      alert("Email을 입력해주세요");
-      return;
-    }
-    if (password === 0) {
-      alert("Password를 입력해주세요");
-      return;
-    }
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    navigator("/");
-    console.log("data", data);
-    console.log("error", error);
-  };
-
-  const onClickGitHub = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "github",
-    });
-  };
-
-  const onClickBack = () => {
-    navigator("/");
+    if (error) {
+      alert("로그인이 되지 않았어요! 다시 입력해주세요!");
+    }
+    if (data.user.id) {
+      navigator("/");
+      setIsLogin(true);
+    }
   };
 
   return (
     <div className="flex justify-center items-center  flex-col  h-screen  ">
-      <div className=" pl-4 absolute top-0 pt-4 left-0">
-        <button onClick={onClickBack} style={{ backgroundImage: `url("/Back.svg")` }} className=" w-10 h-10"></button>
-      </div>
       <div className="flex flex-col p-6 h-72  rounded-2xl gap-4 border-double  w-80 shadow-xl">
         <h2 className="text-center text-2xl">로 그 인</h2>
         <input
@@ -67,7 +58,6 @@ const Login = () => {
             회원가입
           </Link>
         </div>
-        <button onClick={onClickGitHub}> 깃허브</button>
       </div>
     </div>
   );
