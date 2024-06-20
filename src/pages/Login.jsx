@@ -16,9 +16,16 @@ const Login = () => {
       email,
       password,
     });
-
-    if (error) {
-      alert("로그인이 되지 않았어요! 다시 입력해주세요!");
+    if (email.length === 0) {
+      alert("아이디를 입력해주세요");
+      return;
+    }
+    if (password.length === 0 || password.length < 6) {
+      alert("비밀번호를 입력해주세요 (6자 이상)");
+      return;
+    }
+    if (error && error.message) {
+      alert("아이디 비밀번호를 확인해주세요");
     }
     if (data.user.id) {
       navigator("/");
