@@ -1,32 +1,36 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import supabase from "../supabase/supabase";
 import { Link, useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { loginOut } from "../recoil/atom/login";
 
 const Login = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const navigator = useNavigate();
+  const [isLogin, setIsLogin] = useRecoilState(loginOut);
 
-  const onClickLogin = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (isLogin === true) {
+      navigator("/");
+    }
+  });
+
+  const onClickLogin = async () => {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
 
-    if (email === 0) {
-      alert("Email을 입력해주세요");
-      return;
-    }
-    if (password === 0) {
-      alert("Password를 입력해주세요");
-      return;
-    }
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    navigator("/");
-    console.log("data", data);
-    console.log("error", error);
+    if (error) {
+      alert("로그인이 되지 않았어요! 다시 입력해주세요!");
+    }
+    if (data.user.id) {
+      navigator("/");
+      setIsLogin(true);
+    }
   };
 
   return (

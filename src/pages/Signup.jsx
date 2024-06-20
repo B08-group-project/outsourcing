@@ -1,16 +1,24 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import supabase from "../supabase/supabase";
 import { useNavigate, Link } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { loginOut } from "../recoil/atom/login";
 
 const Signup = () => {
   const nicknameRef = useRef(null);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const confirmationRef = useRef(null);
-  const [user, setUser] = useState(null);
   const navigator = useNavigate();
+  const [isLogin] = useRecoilState(loginOut);
 
-  const OnclickSignup = async () => {
+  useEffect(() => {
+    if (isLogin === true) {
+      navigator("/");
+    }
+  });
+
+  const onClickSignup = async () => {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
     const nickname = nicknameRef.current.value;
@@ -33,13 +41,15 @@ const Signup = () => {
       return;
     }
 
-    const { data } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
-    setUser(data);
 
-    const { error } = await supabase.from("users").insert({
+    if (error && error.message === "User already registered") {
+      alert("중복된 아이디입니다.");
+    }
+    await supabase.from("users").insert({
       id: data.user.id,
       nickname,
       email,
@@ -53,17 +63,8 @@ const Signup = () => {
     }
   };
 
-  // const OnclickBack = () => {
-  //   navigator("/login");
-  // };
-
   return (
     <div className="flex justify-center items-center  flex-col h-screen ">
-      {/* <div className=" w-screen pl-4 absolute top-0 pt-4">
-        <button onClick={OnclickBack} className=" w-28 h-9 bg-sky-300 rounded-lg text-white ">
-          뒤로 가기
-        </button>
-      </div> */}
       <div className="flex flex-col p-6 h-96  rounded-2xl gap-4 border-double  w-96 shadow-xl">
         <h2 className="text-center text-2xl">회 원 가 입</h2>
         <input
@@ -76,7 +77,7 @@ const Signup = () => {
           type="email"
           placeholder="Email"
           ref={emailRef}
-          className=" px-2 py-1 rounded-md w-full border-2 text-xs"
+          className=" px-2 py-2 rounded-md w-full border-2 text-xs"
         />
         <input
           type="password"
@@ -90,7 +91,7 @@ const Signup = () => {
           ref={confirmationRef}
           className=" px-2 py-2 rounded-md w-full ba bg border-2 text-xs"
         />
-        <button onClick={OnclickSignup} className=" bg-sky-300 p-2  rounded text-white text-xs">
+        <button onClick={onClickSignup} className=" bg-sky-300 p-2  rounded text-white text-xs">
           회원가입
         </button>
         <div className=" text-xs flex justify-between">

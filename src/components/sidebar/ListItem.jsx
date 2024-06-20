@@ -1,13 +1,15 @@
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { searchData, selectPlaceState } from "../../recoil/atom/searchAtom";
+import { searchData, searchclickedPlace, selectPlaceState } from "../../recoil/atom/searchAtom";
 import { useEffect, useState } from "react";
 
 const ListItem = ({ index, places }) => {
   const [isCheck, setIsCheck] = useState(false);
   const [datePlace, setDatePlace] = useRecoilState(selectPlaceState);
   const setSearchedData = useSetRecoilState(searchData);
+  const setClickPlace = useSetRecoilState(searchclickedPlace);
 
   useEffect(() => {
+    // console.log("places::", places);
     const foundItem = datePlace.find((item) => item.id === places.id);
     if (foundItem) {
       setIsCheck(true);
@@ -26,6 +28,7 @@ const ListItem = ({ index, places }) => {
           return item;
         });
       });
+      setClickPlace({});
       setDatePlace((prev) => {
         return prev.filter((data) => data.id !== places.id);
       });
@@ -38,29 +41,34 @@ const ListItem = ({ index, places }) => {
           return item;
         });
       });
+      setClickPlace(places);
       setDatePlace((prev) => [...prev, places]);
     }
     setIsCheck(!isCheck);
   };
 
   return (
-    <li className="item flex">
-      <div className="info">
-        <span className={`marker marker_${index + 1}`}>{index + 1}</span>
-        <a href={places.place_url}>
-          <h5 className="info-item place-name">{places.place_name}</h5>
+    <li className="flex relative items-center mb-4 border-b border-solid border-gray-400 w-[90%] mx-auto pb-3">
+      <div className="flex gap-5 items-center">
+        <span className="font-semibold">{index + 1}</span>
+        <div>
+          <h5 className="mb-2 font-semibold ">{places.place_name}</h5>
           {places.road_address_name ? (
             <>
-              <span className="info-item road-address-name">{places.road_address_name}</span>
-              <span className="info-item address-name">{places.address_name}</span>
+              <span className="">{places.road_address_name}</span>
             </>
           ) : (
-            <span className="info-item address-name">{places.address_name}</span>
+            <span className="">{places.address_name}</span>
           )}
-          <span className="info-item tel"> {places.phone}</span>
-        </a>
+          {places.phone ? <span className="ml-3"> {`tel: ${places.phone}`}</span> : null}
+        </div>
       </div>
-      <input type="checkbox" checked={isCheck} onChange={toggleCheckBox} />
+      <input
+        className="w-[20px] h-[20px] cursor-pointer absolute right-0"
+        type="checkbox"
+        checked={isCheck}
+        onChange={toggleCheckBox}
+      />
     </li>
   );
 };
