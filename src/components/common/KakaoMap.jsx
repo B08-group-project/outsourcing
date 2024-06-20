@@ -19,6 +19,7 @@ function KakaoMap() {
   const [map, setMap] = useState();
   const [location, setLocation] = useState(null);
   const [isCurrentLoading, setIsCurrentLoading] = useState(false);
+  const [overlayVisible, setOverlayVisible] = useState(false);
   const keyword = useRecoilValue(searchKeywordState);
   const category = useRecoilValue(searchCategoryState);
   const setSearchData = useSetRecoilState(searchData);
@@ -86,6 +87,7 @@ function KakaoMap() {
     if (map && clickedPlace) {
       const placeLocation = new kakao.maps.LatLng(clickedPlace.y, clickedPlace.x);
       map.setCenter(placeLocation);
+      setOverlayVisible(true);
     }
   }, [map, clickedPlace]);
 
@@ -95,6 +97,11 @@ function KakaoMap() {
       style={{ width: "100%", height: "100vh" }} // 지도 크기
       level={level}
       onCreate={setMap}
+      onClick={() => {
+        if (overlayVisible) {
+          setOverlayVisible(false);
+        }
+      }}
     >
       {selectedPlaces.map((marker) => (
         <MapMarker
@@ -132,7 +139,7 @@ function KakaoMap() {
         {isCurrentLoading ? "로딩중" : "현재위치"}
       </button>
 
-      {clickedPlace && (
+      {overlayVisible && clickedPlace && (
         <CustomOverlayMap position={{ lat: clickedPlace.y, lng: clickedPlace.x }}>
           <div className="relative bg-blue-50 rounded-lg shadow-lg p-4 max-w-xs top-[-80px] border border-blue-500">
             <div className="flex flex-col text-left">
