@@ -10,28 +10,31 @@ export const createCourse = async (coursePlaces) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  try {
+    // course 테이블에 사용자 ID를 포함하여 코스 정보 삽입 후 결과 가져오기
+    const result = await supabase.from("course").insert({ user_id: user.id }).select();
 
-  // course 테이블에 사용자 ID를 포함하여 코스 정보 삽입 후 결과 가져오기
-  const result = await supabase.from("course").insert({ user_id: user.id }).select();
+    // 각 장소(place)에 대해 코스 정보를 생성하는 함수 호출
+    for (const place of coursePlaces) {
+      const placesData = {
+        course_id: result.data[0].id,
+        address_name: place.address_name,
+        id: place.id,
+        phone: place.phone,
+        place_name: place.place_name,
+        place_url: place.place_url,
+        road_address_name: place.road_address_name,
+        x: place.x,
+        y: place.y,
+        category_group_code: place.category_group_code,
+      };
 
-  // 각 장소(place)에 대해 코스 정보를 생성하는 함수 호출
-  for (const place of coursePlaces) {
-    const placesData = {
-      course_id: result.data[0].id,
-      address_name: place.address_name,
-      id: place.id,
-      phone: place.phone,
-      place_name: place.place_name,
-      place_url: place.place_url,
-      road_address_name: place.road_address_name,
-      x: place.x,
-      y: place.y,
-      category_group_code: place.category_group_code,
-    };
-
-    await createCoursePlaces(placesData);
-    alert("저장에 성공하셨습니다");
-    return result;
+      await createCoursePlaces(placesData);
+    }
+    alert("저장에 성공하셨습니다.");
+  } catch (error) {
+    console.log(error);
+    alert("저장에 실패하였습니다.");
   }
 };
 
@@ -49,6 +52,7 @@ const createCoursePlaces = async (placesData) => {
       y: placesData.y,
       category_group_code: placesData.category_group_code,
     });
+    // alert("저장에 성공하셨습니다");
     return result;
   } catch (error) {
     console.log(error);

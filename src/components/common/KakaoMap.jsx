@@ -16,14 +16,16 @@ import { useRecoilState } from "recoil";
 
 const { kakao } = window;
 
-function KakaoMap() {
+function KakaoMap({ isSidebarOpen }) {
   const [level, setLevel] = useState(3);
+  const [markers, setMarkers] = useState([]);
   const [map, setMap] = useState();
   const [location, setLocation] = useState(null);
   const [isCurrentLoading, setIsCurrentLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [activePage, setActivePage] = useState(0);
   const [pages, setPages] = useRecoilState(pagesState);
+  const [overlayVisible, setOverlayVisible] = useState(false);
   const keyword = useRecoilValue(searchKeywordState);
   const category = useRecoilValue(searchCategoryState);
   const setSearchData = useSetRecoilState(searchData);
@@ -36,6 +38,18 @@ function KakaoMap() {
     setCurrentPage(ref);
     setActivePage(ref);
   };
+
+  useEffect(() => {
+    if (!map) return;
+    if (selectedPlaces.length === 0) return;
+    const bounds = new kakao.maps.LatLngBounds();
+
+    for (var i = 0; i < selectedPlaces.length; i++) {
+      bounds.extend(new kakao.maps.LatLng(selectedPlaces[i].y, selectedPlaces[i].x));
+    }
+
+    map.setBounds(bounds);
+  }, [selectedPlaces]);
 
   useEffect(() => {
     if (!map) return;
@@ -62,11 +76,18 @@ function KakaoMap() {
           const bounds = new kakao.maps.LatLngBounds();
           const checkedData = data.map((item) => ({ ...item, checked: false }));
           setSearchData(checkedData);
+          let markers = [];
 
           for (var i = 0; i < data.length; i++) {
+            markers.push({
+              position: {
+                lat: data[i].y,
+                lng: data[i].x,
+              },
+            });
             bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
           }
-
+          setMarkers(markers);
           map.setBounds(bounds);
         }
       },
@@ -98,6 +119,7 @@ function KakaoMap() {
     if (map && clickedPlace) {
       const placeLocation = new kakao.maps.LatLng(clickedPlace.y, clickedPlace.x);
       map.setCenter(placeLocation);
+      setOverlayVisible(true);
     }
   }, [map, clickedPlace]);
 
@@ -107,7 +129,20 @@ function KakaoMap() {
       style={{ width: "100%", height: "100vh" }} // 지도 크기
       level={level}
       onCreate={setMap}
+      onClick={() => {
+        if (overlayVisible) {
+          setOverlayVisible(false);
+        }
+      }}
     >
+      {isSidebarOpen &&
+        markers
+          .filter((marker) => {
+            return !selectedPlaces.some((place) => place.x === marker.position.lng && place.y === marker.position.lat);
+          })
+          .map((marker) => (
+            <MapMarker key={`marker-${marker.position.lat},${marker.position.lng}`} position={marker.position} />
+          ))}
       {selectedPlaces.map((marker) => (
         <MapMarker
           key={`marker-${marker.id}`}
@@ -164,7 +199,7 @@ function KakaoMap() {
           );
         })}
 
-      {clickedPlace && (
+      {clickedPlace && overlayVisible && clickedPlace && (
         <CustomOverlayMap position={{ lat: clickedPlace.y, lng: clickedPlace.x }}>
           <div className="relative bg-blue-50 rounded-lg shadow-lg p-4 max-w-xs top-[-80px] border border-blue-500">
             <div className="flex flex-col text-left">

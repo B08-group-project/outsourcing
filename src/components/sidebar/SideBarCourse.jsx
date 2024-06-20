@@ -6,18 +6,46 @@ import { useRecoilState } from "recoil";
 import { createCourse } from "../../lib/api/course";
 import { selectPlaceState } from "../../recoil/atom/searchAtom";
 import FixedButton from "../common/FixedButton";
+import { QueryClient, useMutation } from "@tanstack/react-query";
 
 const SideBarCourse = ({ isCourseOpen, onCourseClose, isOpen, onClose, openSidebar }) => {
   const [coursePlaces, setCoursePlaces] = useRecoilState(selectPlaceState);
+  const queryClient = new QueryClient();
+
+  const mutation = useMutation({
+    mutationFn: createCourse,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["coursePlaces"]);
+      setCoursePlaces([]);
+    },
+  });
 
   const handleSavePlaces = async () => {
-    await createCourse(coursePlaces);
-    setCoursePlaces([]);
+    mutation.mutate(coursePlaces);
+    // await createCourse(coursePlaces);
+    // setCoursePlaces([]);
   };
+
   // 장소를 삭제하는 함수
   const handleDeletePlace = (idToDelete) => {
     const updatedPlaces = coursePlaces.filter((place) => place.id !== idToDelete);
     setCoursePlaces(updatedPlaces);
+  };
+
+  const handleUp = (index) => {
+    if (index > 0) {
+      const updatedPlaces = [...coursePlaces];
+      [updatedPlaces[index], updatedPlaces[index - 1]] = [updatedPlaces[index - 1], updatedPlaces[index]];
+      setCoursePlaces(updatedPlaces);
+    }
+  };
+
+  const handleDown = (index) => {
+    if (index < coursePlaces.length - 1) {
+      const updatedPlaces = [...coursePlaces];
+      [updatedPlaces[index], updatedPlaces[index + 1]] = [updatedPlaces[index + 1], updatedPlaces[index]];
+      setCoursePlaces(updatedPlaces);
+    }
   };
 
   return (
@@ -39,13 +67,32 @@ const SideBarCourse = ({ isCourseOpen, onCourseClose, isOpen, onClose, openSideb
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         <style>{`.overflow-y-auto::-webkit-scrollbar {display: none;}`}</style>
-        {coursePlaces.map((place) => (
+        {coursePlaces.map((place, index) => (
           <div key={place.id}>
-            <div className="flex items-center justify-between bg-white p-4">
+            <div className="mt-[20px] ml-[10px] mb-[5px] flex text-[25px]">{index + 1}</div>
+            <div className="shadow-lg flex items-center justify-between bg-white p-4">
               <PlacesItem place={place} />
-              <button onClick={() => handleDeletePlace(place.id)}>
-                <img className="w-[25px] h-[25px] mr-2" src={closeBtn} alt="close button" />
-              </button>
+              <div>
+                <button
+                  className="mb-[10px] mr-1 transition-transform transform hover:-translate-y-1 hover:scale-125 "
+                  onClick={() => handleUp(index)}
+                >
+                  ↑
+                </button>
+                <button onClick={() => handleDeletePlace(place.id)}>
+                  <img
+                    className="w-[25px] h-[25px] mr-1 transition-transform transform hover:scale-125"
+                    src={closeBtn}
+                    alt="close button"
+                  />
+                </button>
+                <button
+                  className="mt-[10px] mr-1 transition-transform transform hover:translate-y-1 hover:scale-125"
+                  onClick={() => handleDown(index)}
+                >
+                  ↓
+                </button>
+              </div>
             </div>
             <div className="my-2 text-gray-400">▼</div>
           </div>
@@ -60,7 +107,7 @@ const SideBarCourse = ({ isCourseOpen, onCourseClose, isOpen, onClose, openSideb
         </div>
       </div>
       <Sidebar isOpen={isOpen} onClose={onClose} />
-      <FixedButton text="저장 하기" onClick={handleSavePlaces} />
+      {!isOpen && <FixedButton text="저장 하기" onClick={handleSavePlaces} />}
     </div>
   );
 };
