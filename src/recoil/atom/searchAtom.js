@@ -32,7 +32,7 @@ export const searchDataFallback = atom({
 
 export const pagesState = atom({
   key: "pagesState",
-  default: 0,
+  default: [],
 });
 
 export const searchclickedPlace = atom({

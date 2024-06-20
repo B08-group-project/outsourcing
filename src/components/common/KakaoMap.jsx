@@ -50,10 +50,11 @@ function KakaoMap() {
         if (status === kakao.maps.services.Status.ZERO_RESULT) {
           notSearchData(true);
           setSearchData([]);
+          setPages([]);
         }
         if (status === kakao.maps.services.Status.OK) {
-          setPages(pagination.last);
-          pagination.gotoPage(currentPage);
+          const pageArr = Array.from({ length: pagination.last }, (_, index) => index + 1);
+          setPages(pageArr);
 
           const bounds = new kakao.maps.LatLngBounds();
           const checkedData = data.map((item) => ({ ...item, checked: false }));
@@ -96,11 +97,6 @@ function KakaoMap() {
       map.setCenter(placeLocation);
     }
   }, [map, clickedPlace]);
-
-  useEffect(() => {
-    // console.log(searchClickedPlace);
-    console.log(Object.keys(searchClickedPlace));
-  }, [searchClickedPlace]);
 
   return (
     <Map
@@ -145,28 +141,20 @@ function KakaoMap() {
         {isCurrentLoading ? "로딩중" : "현재위치"}
       </button>
 
-      {pages && (
-        <>
-          <button
-            onClick={() => detectRef(1)}
-            className="fixed bottom-2 left-[300px] w-[2rem] h-[2rem] p-1 rounded-lg bg-white text-gray-600 z-30 border border-gray-400"
-          >
-            1
-          </button>
-          <button
-            onClick={() => detectRef(2)}
-            className="fixed bottom-2 left-[340px] w-[2rem] h-[2rem] p-1 rounded-lg bg-white text-gray-600 z-30 border border-gray-400"
-          >
-            2
-          </button>
-          <button
-            onClick={() => detectRef(3)}
-            className="fixed bottom-2 left-[380px] w-[2rem] h-[2rem] p-1 rounded-lg bg-white text-gray-600 z-30 border border-gray-400"
-          >
-            3
-          </button>
-        </>
-      )}
+      {pages.length >= 1 &&
+        pages.map((page) => {
+          const leftPosition = 300 + (page - 1) * 40;
+          return (
+            <button
+              key={page}
+              onClick={() => detectRef(page)}
+              style={{ left: `${leftPosition}px` }}
+              className="fixed bottom-2 w-[2rem] h-[2rem] p-1 rounded-lg bg-white text-gray-600 z-30 border border-gray-400"
+            >
+              {page}
+            </button>
+          );
+        })}
 
       {clickedPlace && (
         <CustomOverlayMap position={{ lat: clickedPlace.y, lng: clickedPlace.x }}>
