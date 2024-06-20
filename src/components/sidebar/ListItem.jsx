@@ -9,7 +9,6 @@ const ListItem = ({ index, places }) => {
   const setClickPlace = useSetRecoilState(searchclickedPlace);
 
   useEffect(() => {
-    // console.log("places::", places);
     const foundItem = datePlace.find((item) => item.id === places.id);
     if (foundItem) {
       setIsCheck(true);
