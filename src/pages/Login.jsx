@@ -1,49 +1,47 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import supabase from "../supabase/supabase";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
-
   const navigator = useNavigate();
+  const token = localStorage.getItem("sb-dsvfmxsahcirxphfczum-auth-token");
+
+  // useEffect(() => {
+  //   if (token) {
+  //     navigator("/");
+  //   }
+  // }, []);
 
   const onClickLogin = async () => {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
 
-    if (email === 0) {
-      alert("Email을 입력해주세요");
-      return;
-    }
-    if (password === 0) {
-      alert("Password를 입력해주세요");
-      return;
-    }
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    navigator("/");
-    console.log("data", data);
-    console.log("error", error);
+    if (error) {
+      alert("로그인이 되지 않았어요! 다시 입력해주세요!");
+    }
+    if (data.user.id) {
+      navigator("/");
+    }
   };
 
   const onClickGitHub = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "github",
     });
-  };
-
-  const onClickBack = () => {
-    navigator("/");
+    // await supabase.from("users").insert({
+    //   id: data.user.id,
+    //   email: data.user.email,
+    // });
   };
 
   return (
     <div className="flex justify-center items-center  flex-col  h-screen  ">
-      <div className=" pl-4 absolute top-0 pt-4 left-0">
-        <button onClick={onClickBack} style={{ backgroundImage: `url("/Back.svg")` }} className=" w-10 h-10"></button>
-      </div>
       <div className="flex flex-col p-6 h-72  rounded-2xl gap-4 border-double  w-80 shadow-xl">
         <h2 className="text-center text-2xl">로 그 인</h2>
         <input

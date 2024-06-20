@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import supabase from "../supabase/supabase";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -8,6 +8,13 @@ const Signup = () => {
   const passwordRef = useRef(null);
   const confirmationRef = useRef(null);
   const navigator = useNavigate();
+  const token = localStorage.getItem("sb-dsvfmxsahcirxphfczum-auth-token");
+
+  useEffect(() => {
+    if (token) {
+      navigator("/");
+    }
+  }, []);
 
   const onClickSignup = async () => {
     const email = emailRef.current.value;
