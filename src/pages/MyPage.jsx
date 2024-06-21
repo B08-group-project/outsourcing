@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 const MyPage = () => {
   const [email, setEmail] = useState("");
   const [nickname, setNickname] = useState("");
+
   const [coursePlaces, setCoursePlaces] = useState([]);
   const navigate = useNavigate();
 
@@ -33,6 +34,7 @@ const MyPage = () => {
         }
 
       // 닉네임 가져오기
+
       const { data: userData, error: userError } = await supabase
         .from("users")
         .select("nickname")
