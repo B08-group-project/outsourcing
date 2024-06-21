@@ -1,7 +1,7 @@
 import { useRef } from "react";
-import supabase from "../supabase/supabase";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logoImg from "../assets/sky-blue-logo.png";
+import supabase from "../supabase/supabase";
 
 const Signup = () => {
   const nicknameRef = useRef(null);
@@ -10,7 +10,8 @@ const Signup = () => {
   const confirmationRef = useRef(null);
   const navigator = useNavigate();
 
-  const onClickSignup = async () => {
+  const onClickSignup = async (e) => {
+    e.preventDefault();
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
     const nickname = nicknameRef.current.value;
@@ -44,7 +45,7 @@ const Signup = () => {
     }
 
     if (error && error.message === "User already registered") {
-      alert("중복된 아이디입니다.");
+      alert("중복된 이메일입니다.");
       return;
     }
     await supabase.from("users").insert({
@@ -62,45 +63,42 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex justify-center items-center  flex-col h-screen ">
-      <div className="flex flex-col p-6 h-[400px]  rounded-2xl gap-4 border-double  w-96 shadow-xl">
+    <div className="flex justify-center items-center flex-col h-screen">
+      <form onSubmit={onClickSignup} className="flex flex-col w-80 gap-4">
         <div className="flex justify-center items-center">
-          <img src={logoImg} className=" h-16 w-60" />
+          <img src={logoImg} className="h-16 w-60" />
         </div>
         <input
           type="text"
           placeholder="Name"
           ref={nicknameRef}
-          className=" px-2 py-2 rounded-md w-full border-2 text-xs"
+          className="px-2 py-2 rounded-md w-full border-2 text-xs"
         />
         <input
           type="email"
           placeholder="Email"
           ref={emailRef}
-          className=" px-2 py-2 rounded-md w-full border-2 text-xs"
+          className="px-2 py-2 rounded-md w-full border-2 text-xs"
         />
         <input
           type="password"
           placeholder="Password (6자 입력해주세요)"
           ref={passwordRef}
-          className=" px-2 py-2 rounded-md w-full border-2 text-xs"
+          className="px-2 py-2 rounded-md w-full border-2 text-xs"
         />
         <input
           type="password"
           placeholder="confirmation"
           ref={confirmationRef}
-          className=" px-2 py-2 rounded-md w-full ba bg border-2 text-xs"
+          className="px-2 py-2 rounded-md w-full ba bg border-2 text-xs"
         />
-        <button onClick={onClickSignup} className=" bg-sky-300 p-2  rounded text-white text-xs">
-          회원가입
-        </button>
-        <div className=" text-sm flex justify-between">
-          <p>계정이 있으신가요?</p>
-          <Link to={"/Login"} className=" text-sky-400 font-bold">
-            로그인
+        <button className="bg-blue-400 p-2 rounded text-white text-sm">회원가입</button>
+        <div className="text-sm flex justify-center">
+          <Link to={"/login"} className="text-blue-400 font-bold hover:underline">
+            이미 계정이 있으신가요?
           </Link>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

@@ -1,14 +1,15 @@
 import { useRef } from "react";
-import supabase from "../supabase/supabase";
 import { Link, useNavigate } from "react-router-dom";
 import logoImg from "../assets/sky-blue-logo.png";
+import supabase from "../supabase/supabase";
 
 const Login = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const navigator = useNavigate();
 
-  const onClickLogin = async () => {
+  const onClickLogin = async (e) => {
+    e.preventDefault();
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
 
@@ -34,10 +35,10 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen ">
-      <div className="flex flex-col gap-4 p-6 border-double shadow-xl rounded-2xl w-80 h-80">
+    <div className="flex flex-col items-center justify-center h-screen">
+      <form onSubmit={onClickLogin} className="flex flex-col gap-4 w-80">
         <div className="flex justify-center items-center">
-          <img src={logoImg} className=" h-16 w-60" />
+          <img src={logoImg} className="h-16 w-60" />
         </div>
         <input
           type="text"
@@ -51,16 +52,13 @@ const Login = () => {
           ref={passwordRef}
           className="w-full px-2 py-2 text-xs border-2 rounded-md"
         />
-        <button onClick={onClickLogin} className="p-2 text-sm text-white rounded bg-sky-300">
-          로그인
-        </button>
-        <div className="flex justify-between text-xs ">
-          <p>계정이 없으신가요?</p>
-          <Link to={"/signup"} className="font-bold text-sky-400">
-            회원가입
+        <button className="p-2 text-sm text-white rounded bg-blue-400">로그인</button>
+        <div className="flex justify-center text-sm">
+          <Link to={"/signup"} className="font-bold text-blue-400 hover:underline">
+            아직 계정이 없으신가요?
           </Link>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

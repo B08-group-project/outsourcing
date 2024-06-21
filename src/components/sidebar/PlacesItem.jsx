@@ -1,4 +1,3 @@
-import React from "react";
 import { useSetRecoilState } from "recoil";
 import { clickedPlaceState } from "../../recoil/atom/searchAtom";
 
@@ -19,9 +18,9 @@ const PlacesItem = ({ place }) => {
           <a>{place.place_name}</a>
         </span>
         <span className="text-sm text-gray-600">
-          {place.road_address_name} / {place.address_name}
+          {place.road_address_name} {place.road_address_name && place.address_name && "|"} {place.address_name}
         </span>
-        <span className="text-sm text-gray-600">{place.phone}</span>
+        {place.phone && <span className="text-sm text-gray-600">☎️ {place.phone}</span>}
       </div>
     </div>
   );

@@ -1,8 +1,8 @@
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import logoImg from "../../assets/sky-blue-logo.png";
 import userImg from "../../assets/user.png";
 import supabase from "../../supabase/supabase";
-import logoImg from "../../assets/sky-blue-logo.png";
-import { useEffect } from "react";
 
 function Header() {
   const navigator = useNavigate();
@@ -25,15 +25,15 @@ function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 z-10 flex items-center justify-between w-full px-6 py-2 bg-white">
+    <header className="fixed top-0 left-0 z-10 flex items-center justify-between w-full px-6 py-3 bg-white">
       <Link to="/">
-        <img className="w-[200px] h-[50px]" src={logoImg} />
+        <img className="w-32" src={logoImg} />
       </Link>
       <div className="flex gap-6">
         <Link to="/mypage" className="w-6 h-6">
-          <img src={userImg} alt="마이페이지 링크" className=" mt-2" />
+          <img src={userImg} alt="마이페이지 링크" />
         </Link>
-        <button onClick={onClickLogout} className=" bg-sky-300 p-3  rounded text-white text-xs">
+        <button onClick={onClickLogout} className=" bg-blue-400 px-3 py-1 rounded text-white text-sm">
           로그아웃
         </button>
       </div>
