@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { CustomOverlayMap, Map, MapMarker, Polyline } from "react-kakao-maps-sdk";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { MARKER_IMG } from "../../constants/Category";
 import {
   clickedPlaceState,
@@ -12,7 +12,6 @@ import {
   searchclickedPlace,
   selectPlaceState,
 } from "../../recoil/atom/searchAtom";
-import { useRecoilState } from "recoil";
 
 const { kakao } = window;
 
@@ -30,9 +29,9 @@ function KakaoMap({ isSidebarOpen }) {
   const category = useRecoilValue(searchCategoryState);
   const setSearchData = useSetRecoilState(searchData);
   const selectedPlaces = useRecoilValue(selectPlaceState);
-  const clickedPlace = useRecoilValue(clickedPlaceState);
+  const [clickedPlace, setClickedPlace] = useRecoilState(clickedPlaceState);
   const notSearchData = useSetRecoilState(searchDataFallback);
-  const searchClickedPlace = useRecoilValue(searchclickedPlace);
+  const [searchClickedPlace, setSearchClickedPlace] = useRecoilState(searchclickedPlace);
 
   const detectRef = (ref) => {
     setCurrentPage(ref);
@@ -80,6 +79,8 @@ function KakaoMap({ isSidebarOpen }) {
 
           for (var i = 0; i < data.length; i++) {
             markers.push({
+              place_url: data[i].place_url,
+              place_name: data[i].place_name,
               position: {
                 lat: data[i].y,
                 lng: data[i].x,
@@ -141,7 +142,18 @@ function KakaoMap({ isSidebarOpen }) {
             return !selectedPlaces.some((place) => place.x === marker.position.lng && place.y === marker.position.lat);
           })
           .map((marker) => (
-            <MapMarker key={`marker-${marker.position.lat},${marker.position.lng}`} position={marker.position} />
+            <MapMarker
+              key={`marker-${marker.position.lat},${marker.position.lng}`}
+              position={marker.position}
+              onClick={() => {
+                setSearchClickedPlace({
+                  x: marker.position.lng,
+                  y: marker.position.lat,
+                  place_url: marker.place_url,
+                  place_name: marker.place_name,
+                });
+              }}
+            />
           ))}
       {selectedPlaces.map((marker) => (
         <MapMarker
@@ -150,6 +162,14 @@ function KakaoMap({ isSidebarOpen }) {
           image={{
             src: MARKER_IMG[marker.category_group_code],
             size: { width: 45, height: 45 },
+          }}
+          onClick={() => {
+            setClickedPlace({
+              x: marker.x,
+              y: marker.y,
+              place_url: marker.place_url,
+              place_name: marker.place_name,
+            });
           }}
         />
       ))}
@@ -173,10 +193,10 @@ function KakaoMap({ isSidebarOpen }) {
         +
       </button>
       <button
-        className="fixed top-[80px] left-4 w-[5rem] h-[2rem] p-1 rounded-lg bg-white text-gray-600 z-30 border border-gray-400"
+        className="fixed top-[4.5rem] left-4 w-[5rem] h-[2rem] p-1 rounded-lg bg-white text-gray-600 z-30 border border-gray-400 hover:bg-gray-50"
         onClick={setCurrentPosition}
       >
-        {isCurrentLoading ? "로딩중" : "현재위치"}
+        {isCurrentLoading ? "로딩중..." : "내 위치"}
       </button>
 
       {pages.length >= 1 &&
@@ -208,14 +228,14 @@ function KakaoMap({ isSidebarOpen }) {
                 rel="noopener noreferrer"
                 className="relative after:absolute after:w-full after:h-[2px] after:bg-current after:left-0 after:bottom-[-2px] after:transform after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100"
               >
-                  {clickedPlace.place_name}
+                {clickedPlace.place_name}
                 <span className="inline-block animate-move-arrow">→</span>
-                </a>
-              </span>
+              </a>
+            </span>
           </div>
         </CustomOverlayMap>
       )}
-      {Object.keys(searchClickedPlace).length >= 1 && (
+      {isSidebarOpen && Object.keys(searchClickedPlace).length >= 1 && (
         <CustomOverlayMap position={{ lat: searchClickedPlace.y, lng: searchClickedPlace.x }}>
           <div className="relative flex flex-col text-left bg-gray-50 rounded-lg shadow-lg p-4 max-w-xs top-[-80px]">
             <span className="relative text-lg font-bold text-gray-800">
@@ -225,11 +245,11 @@ function KakaoMap({ isSidebarOpen }) {
                 rel="noopener noreferrer"
                 className="relative after:absolute after:w-full after:h-[2px] after:bg-current after:left-0 after:bottom-[-2px] after:transform after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100"
               >
-                  {searchClickedPlace.place_name}
+                {searchClickedPlace.place_name}
                 <span className="inline-block animate-move-arrow">→</span>
-                </a>
-              </span>
-            </div>
+              </a>
+            </span>
+          </div>
         </CustomOverlayMap>
       )}
     </Map>

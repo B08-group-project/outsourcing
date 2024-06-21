@@ -1,6 +1,6 @@
+import { useEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { searchData, searchclickedPlace, selectPlaceState } from "../../recoil/atom/searchAtom";
-import { useEffect, useState } from "react";
 
 const ListItem = ({ index, places }) => {
   const [isCheck, setIsCheck] = useState(false);
@@ -48,7 +48,10 @@ const ListItem = ({ index, places }) => {
   };
 
   return (
-    <li className="flex relative items-center mb-4 border-b border-solid border-gray-400 w-[90%] mx-auto pb-3">
+    <li
+      className="flex relative items-center mb-4 border-b border-solid border-gray-400 w-[90%] mx-auto pb-3 cursor-pointer"
+      onClick={() => setClickPlace(places)}
+    >
       <div className="flex gap-5 items-center">
         <span className="font-semibold">{index + 1}</span>
         <div>

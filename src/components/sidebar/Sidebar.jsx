@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
 import closeBtn from "../../assets/close-2.png";
 import searchBtn from "../../assets/search.png";
-import { useRecoilValue } from "recoil";
-import { searchKeywordState, searchCategoryState, searchData, searchDataFallback } from "../../recoil/atom/searchAtom";
+import { searchCategoryState, searchData, searchDataFallback, searchKeywordState } from "../../recoil/atom/searchAtom";
 import ListItem from "./ListItem";
-import { useRecoilState } from "recoil";
 import SearchFallback from "./SearchFallback";
 
 function Sidebar({ isOpen, onClose }) {
@@ -46,12 +45,13 @@ function Sidebar({ isOpen, onClose }) {
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
-      <div className="flex items-center justify-between p-3">
-        <header className="text-[24px] font-bold ml-5">장소 검색</header>
+      <header className="flex items-center justify-between p-4 mb-3">
         <button onClick={onClose}>
-          <img className="w-[50px] h-[50px]" src={closeBtn} alt="close button" />
+          <img className="w-8 h-8" src={closeBtn} alt="close button" />
         </button>
-      </div>
+        <h2 className="text-xl font-semibold">장소 검색</h2>
+        <span className="w-8"></span>
+      </header>
 
       <form className="relative flex items-center mb-4" onSubmit={submitKeyword}>
         <input
@@ -68,32 +68,32 @@ function Sidebar({ isOpen, onClose }) {
 
       <div className="flex justify-center gap-3 mb-7">
         <button
-          className={`text-[#84BBF2] w-[81px] h-[31px] border-2 border-[#C5DAEE] rounded-2xl ${
-            categoryRecoil === "FD6" ? "bg-blue-300 text-white" : "bg-white"
+          className={`text-blue-400 w-[81px] h-[31px] border-2 border-blue-300 rounded-2xl ${
+            categoryRecoil === "FD6" ? "bg-blue-400 text-white" : "bg-white"
           }`}
           onClick={() => setCategoryRecoil("FD6")}
         >
           맛집
         </button>
         <button
-          className={`text-[#84BBF2] w-[81px] h-[31px] border-2 border-[#C5DAEE] rounded-2xl ${
-            categoryRecoil === "CE7" ? "bg-blue-300 text-white" : "bg-white"
+          className={`text-blue-400 w-[81px] h-[31px] border-2 border-blue-300 rounded-2xl ${
+            categoryRecoil === "CE7" ? "bg-blue-400 text-white" : "bg-white"
           }`}
           onClick={() => setCategoryRecoil("CE7")}
         >
           카페
         </button>
         <button
-          className={`text-[#84BBF2] w-[81px] h-[31px] border-2 border-[#C5DAEE] rounded-2xl ${
-            categoryRecoil === "AT4" ? "bg-blue-300 text-white" : "bg-white"
+          className={`text-blue-400 w-[81px] h-[31px] border-2 border-blue-300 rounded-2xl ${
+            categoryRecoil === "AT4" ? "bg-blue-400 text-white" : "bg-white"
           }`}
           onClick={() => setCategoryRecoil("AT4")}
         >
           관광명소
         </button>
         <button
-          className={`text-[#84BBF2] w-[81px] h-[31px] border-2 border-[#C5DAEE] rounded-2xl ${
-            categoryRecoil === "CT1" ? "bg-blue-300 text-white" : "bg-white"
+          className={`text-blue-400 w-[81px] h-[31px] border-2 border-blue-300 rounded-2xl ${
+            categoryRecoil === "CT1" ? "bg-blue-400 text-white" : "bg-white"
           }`}
           onClick={() => setCategoryRecoil("CT1")}
         >
@@ -101,6 +101,7 @@ function Sidebar({ isOpen, onClose }) {
         </button>
       </div>
       <main className="overflow-y-scroll h-[75%]">
+        {sidebarData.length === 0 && <div className="text-center text-gray-600">검색 결과가 없습니다.</div>}
         {sidebarData.length > 0 &&
           sidebarData.map((data, index) => <ListItem key={data.id} index={index} places={data} />)}
         {sidebarData.length === 0 && fallback && <SearchFallback />}
