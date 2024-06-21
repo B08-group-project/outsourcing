@@ -198,31 +198,38 @@ function KakaoMap({ isSidebarOpen }) {
             </button>
           );
         })}
-
-      {clickedPlace && overlayVisible && clickedPlace && (
-        <CustomOverlayMap position={{ lat: clickedPlace.y, lng: clickedPlace.x }}>
-          <div className="relative bg-blue-50 rounded-lg shadow-lg p-4 max-w-xs top-[-80px] border border-blue-500">
-            <div className="flex flex-col text-left">
-              <span className="text-lg font-bold text-gray-800">
-                <a href={clickedPlace.place_url} target="_blank" rel="noopener noreferrer">
+      {overlayVisible && clickedPlace && (
+        <CustomOverlayMap position={{ lat: clickedPlace.y, lng: clickedPlace.x }} clickable>
+          <div className="relative flex flex-col text-left bg-gray-50 rounded-lg shadow-lg p-4 max-w-xs top-[-80px]">
+            <span className="relative text-lg font-bold text-gray-800">
+              <a
+                href={clickedPlace.place_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative after:absolute after:w-full after:h-[2px] after:bg-current after:left-0 after:bottom-[-2px] after:transform after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100"
+              >
                   {clickedPlace.place_name}
+                <span className="inline-block animate-move-arrow">→</span>
                 </a>
               </span>
-            </div>
           </div>
         </CustomOverlayMap>
       )}
       {Object.keys(searchClickedPlace).length >= 1 && (
         <CustomOverlayMap position={{ lat: searchClickedPlace.y, lng: searchClickedPlace.x }}>
-          <div className="relative bg-blue-50 rounded-lg shadow-lg p-4 max-w-xs top-[-80px] border border-blue-500">
-            <div className="flex flex-col text-left">
-              <span className="text-lg font-bold text-gray-800">
-                <a href={searchClickedPlace.place_url} target="_blank" rel="noopener noreferrer">
+          <div className="relative flex flex-col text-left bg-gray-50 rounded-lg shadow-lg p-4 max-w-xs top-[-80px]">
+            <span className="relative text-lg font-bold text-gray-800">
+              <a
+                href={searchClickedPlace.place_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative after:absolute after:w-full after:h-[2px] after:bg-current after:left-0 after:bottom-[-2px] after:transform after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100"
+              >
                   {searchClickedPlace.place_name}
+                <span className="inline-block animate-move-arrow">→</span>
                 </a>
               </span>
             </div>
-          </div>
         </CustomOverlayMap>
       )}
     </Map>
